@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="height:500px;width: 100%;"></div>
+     <!-- ECharts单文件引入 -->
+
+	<script src="/static/echarts/src/echarts-oss.js" charset="UTF-8"></script>
+    <script src="/static/echarts/jquery.js"></script>
+    <script src="/static/echarts/esl.js"></script>
+    <script type="text/javascript">
+        test();
+        function test(){
+            var alert_data=[];
+            var alert=[];
+             require.config({
+                paths: {
+                    echarts: '/static/echarts/src'
+                }
+            });
+            require(
+            [
+                'echarts',
+                'echarts/chart/map'
+            ],
+                function (ec) {
+                     // 基于准备好的dom，初始化echarts图表
+                    var myChart = ec.init(document.getElementById('main'));
+                    // 自定义扩展图表类型：mapType = body
+                    require('echarts/util/mapData/params').params.baiduBuilding = {
+                        getGeoJson: function (callback) {
+                            $.ajax({
+                                type:"get",
+                                url: "/static/echarts/svg/network.svg",
+                                dataType: 'xml',
+                                success: function(xml) {
+                                    callback(xml)
+                                }
+                            });
+                        }
+                    };
+                    option = {
+                        backgroundColor:'#ffffff',
+                        title : {
+                            text : '',
+                            textStyle: {
+                                color: '#000'
+                            }
+                        },
+                        tooltip : {
+                            trigger: 'item',
+                            formatter: function (params) {
+                                return params.name + ' : ' + params.value;
+                            }
+                        },
+			color: ['#00CC33','#0066FF'],
+                        legend: {
+                            data: ['源站', '上层']
+                        },
+                        toolbox: {
+                            show : true,
+                            feature : {
+                                mark : {show: false},
+                                dataView : {show: true, readOnly: false},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
+                        },
+                         dataRange: {
+	                     splitList: [
+                                //{start: 100},
+                                {start: 60,label: '严重', color: '#ff0c3f'},
+                                {start: 30, end: 60,label: '警告', color: '#ffdb15'},
+                                //{start: 200, end: 300},
+                                //{start: 10, end: 200, label: '10 到 200（自定义label）'},
+                                {start: 0, end: 30, label: '正常', color: 'lime'}
+                                //{end: 0}
+                            ],
+                            //color: ['#E0022B', '#E09107', '#A3E00B'],
+                            color: ['#ff3333', 'orange','lime'],
+
+                            textStyle:{
+                                color:'#060e01'
+                            },
+                             orient :'horizontal',
+                             x:'left',
+                             y:'top',
+                             //range:{start: 0, end: 100},
+                             hoverLink :true,
+                             itemWidth : 15
+                        },
+                        animationDurationUpdate: 2000,
+                        series : [
+                            {
+                                name: '源站',
+                                type: 'map',
+                                mapType: 'baiduBuilding',
+                                roam:true,
+                                itemStyle:{
+                                    normal:{label:{show:true}},
+                                    emphasis:{label:{show:true}}
+                                },
+                                data: [],
+                                geoCoord: {
+                                    '(源)山东省济南市天桥三线机房': [100, 1],
+                                    '(源)浙江电信杭州萧山回澜路机房（双线）': [600, 1]
+                                },
+                                markPoint : {
+                                    symbolSize : 3,
+                                    clickable : false,
+                                    data : [
+                                        {name: '(源)山东省济南市天桥三线机房',value:'#00CC33'},
+                                        {name: '(源)浙江电信杭州萧山回澜路机房（双线）',value:'#00CC33'}
+                                    ]
+                                },
+                                markLine : {
+                                    smooth:false,
+                                    clickable :true,
+                                    smoothness : 0.2,
+                                    effect : {
+                                        show: true,
+                                        scaleSize: 1,
+                                        period: 20,
+                                        color: '#fff',
+                                        shadowBlur: 5
+                                    },
+                                    symbol: ['none'],
+                                    itemStyle : {
+                                        normal: {
+                                            borderWidth:1,
+                                            lineStyle: {
+                                                type: 'solid'
+                                            }
+                                        }
+                                    },
+                                    data : []
+                                }
+                            },
+                            {
+                                name: '上层',
+                                type: 'map',
+                                mapType: 'baiduBuilding',
+                                roam:true,
+                                symbol: ['none'],
+                                itemStyle:{
+                                    normal:{label:{show:true}},
+                                    emphasis:{label:{show:true}}
+                                },
+                                data: [],
+                                geoCoord: {
+                                        '(上)北京移动信息港机房': [10, 300],
+                                        '(上)四川电信德阳珠江东路机房': [50, 300],
+                                        '(上)山东省济南市中国电信天桥数据中心': [90, 300],
+                                        '(上)广东电信佛山拥翠路机房': [130, 300],
+                                        '(上)广东联通梅州邮政机房': [170, 300],
+                                        '(上)广西电信南宁二枢纽机房': [210, 300],
+                                        '(上)江西电信吉安大桥西路机房': [250, 300],
+                                        '(上)河北联通石家庄二枢纽机房': [290, 300],
+                                        '(上)河北联通石家庄信息中心机房': [330, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（单电信线路）': [370, 300],
+                                        '(上)上海电信春晓路机房': [410, 300],
+                                        '(上)北京电信兆维BGP机房': [450, 300],
+                                        '(上)北京联通木樨园BGP机房': [490, 300],
+                                        '(上)广东电信佛山南海平洲双线机房': [530, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（单移动线路）': [570, 300],
+                                        '(上)浙江联通杭州滨江路机房': [610, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（双线2）': [650, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（单联通线路）': [690, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（双线3）': [730, 300],
+                                        '(上)北京联通南苑机房-02': [760, 300]
+                                    },
+                                markPoint : {
+                                    symbolSize : 3,
+                                    clickable : false,
+                                    data : [
+                                        {name: '(上)北京移动信息港机房',value:'#0066FF'},
+                                        {name: '(上)四川电信德阳珠江东路机房',value:'#0066FF'},
+                                        {name: '(上)山东省济南市中国电信天桥数据中心',value:'#0066FF'},
+                                        {name: '(上)广东电信佛山拥翠路机房',value:'#0066FF'},
+                                        {name: '(上)广东联通梅州邮政机房',value:'#0066FF'},
+                                        {name: '(上)广西电信南宁二枢纽机房',value:'#0066FF'},
+                                        {name: '(上)江西电信吉安大桥西路机房',value:'#0066FF'},
+                                        {name: '(上)河北联通石家庄二枢纽机房',value:'#0066FF'},
+                                        {name: '(上)河北联通石家庄信息中心机房',value:'#0066FF'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（单电信线路）',value:'#0066FF'},
+                                        {name: '(上)上海电信春晓路机房',value:'#0066FF'},
+                                        {name: '(上)北京电信兆维BGP机房',value:'#0066FF'},
+                                        {name: '(上)北京联通木樨园BGP机房',value:'#0066FF'},
+                                        {name: '(上)广东电信佛山南海平洲双线机房',value:'#0066FF'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（单移动线路）',value:'#0066FF'},
+                                        {name: '(上)浙江联通杭州滨江路机房',value:'#0066FF'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（双线2）',value:'#0066FF'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（单联通线路）',value:'#0066FF'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（双线3）',value:'#0066FF'},
+                                        {name: '(上)北京联通南苑机房-02',value:'#0066FF'}
+                                    ]
+                                },
+                                markLine : {
+                                    smooth:true,
+                                    clickable :true,
+                                    smoothness : 0.2,
+                                    effect : {
+                                        show: true,
+                                        scaleSize: 1,
+                                        period: 20,
+                                        color: '#fff',
+                                        shadowBlur: 5
+                                    },
+                                    itemStyle : {
+                                        normal: {
+                                            borderWidth:1,
+                                            lineStyle: {
+                                                type: 'solid'
+                                            }
+                                        }
+                                    },
+                                    data : []
+                                }
+                            },
+                            {
+                                type: 'map',
+                                mapType: 'baiduBuilding',
+                                data: [],
+                                markPoint: {
+                                    symbol: 'emptyCircle',
+                                    clickable : false,
+                                    effect: {
+                                        show: true,
+
+                                    },
+                                    data: []
+                                }
+                            }
+                        ]
+                    };
+
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+                    $(function(){
+                    $.ajax({
+                        type: "GET",
+                        async: false,
+                        url: "/static/results",
+                        dataType: "json",
+                        data:{rnd:Math.random()},
+                        success: function(result) {
+                        for (var i=0;i<result.length;i++){
+                            alert_data.push([{name: result[i].src_name}, {name: result[i].dest_name, value: result[i].value}]);
+                     }//for end
+
+                     myChart.setOption({
+                       series : [
+                            {
+                                name: '源站',
+                                type: 'map',
+                                mapType: 'baiduBuilding',
+                                roam:true,
+                                itemStyle:{
+                                    normal:{label:{show:true}},
+                                    emphasis:{label:{show:true}}
+                                },
+                                data: [],
+                                geoCoord: {
+                                    '(源)山东省济南市天桥三线机房': [100, 1],
+                                    '(源)浙江电信杭州萧山回澜路机房（双线）': [600, 1]
+                                },
+                                markPoint : {
+                                    symbolSize : 3,
+                                    clickable : false,
+                                    data : [
+                                        {name: '(源)山东省济南市天桥三线机房'},
+                                        {name: '(源)浙江电信杭州萧山回澜路机房（双线）'}
+                                    ]
+                                },
+                                markLine : {
+                                    smooth:false,
+                                    clickable :true,
+                                    smoothness : 0.2,
+                                    effect : {
+                                        show: true,
+                                        scaleSize: 1,
+                                        period: 20,
+                                        color: '#fff',
+                                        shadowBlur: 5
+                                    },
+                                    symbol: ['none'],
+                                    itemStyle : {
+                                        normal: {
+                                            borderWidth:1,
+                                            lineStyle: {
+                                                type: 'solid'
+                                            }
+                                        }
+                                    },
+                                    data : []
+
+                                }
+                            },
+                            {
+                                name: '上层',
+                                type: 'map',
+                                mapType: 'baiduBuilding',
+                                roam:true,
+                                symbol: ['none'],
+                                itemStyle:{
+                                    normal:{label:{show:true}},
+                                    emphasis:{label:{show:true}}
+                                },
+                                data: [],
+                                geoCoord: {
+                                        '(上)北京移动信息港机房': [10, 300],
+                                        '(上)四川电信德阳珠江东路机房': [50, 300],
+                                        '(上)山东省济南市中国电信天桥数据中心': [90, 300],
+                                        '(上)广东电信佛山拥翠路机房': [130, 300],
+                                        '(上)广东联通梅州邮政机房': [170, 300],
+                                        '(上)广西电信南宁二枢纽机房': [210, 300],
+                                        '(上)江西电信吉安大桥西路机房': [250, 300],
+                                        '(上)河北联通石家庄二枢纽机房': [290, 300],
+                                        '(上)河北联通石家庄信息中心机房': [330, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（单电信线路）': [370, 300],
+                                        '(上)上海电信春晓路机房': [410, 300],
+                                        '(上)北京电信兆维BGP机房': [450, 300],
+                                        '(上)北京联通木樨园BGP机房': [490, 300],
+                                        '(上)广东电信佛山南海平洲双线机房': [530, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（单移动线路）': [570, 300],
+                                        '(上)浙江联通杭州滨江路机房': [610, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（双线2）': [650, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（单联通线路）': [690, 300],
+                                        '(上)浙江电信杭州萧山回澜路机房（双线3）': [730, 300],
+                                        '(上)北京联通南苑机房-02': [760, 300]
+                                    },
+                                markPoint : {
+                                    symbolSize : 3,
+                                    clickable : false,
+                                    data : [
+                                        {name: '(上)北京移动信息港机房'},
+                                        {name: '(上)四川电信德阳珠江东路机房'},
+                                        {name: '(上)山东省济南市中国电信天桥数据中心'},
+                                        {name: '(上)广东电信佛山拥翠路机房'},
+                                        {name: '(上)广东联通梅州邮政机房'},
+                                        {name: '(上)广西电信南宁二枢纽机房'},
+                                        {name: '(上)江西电信吉安大桥西路机房'},
+                                        {name: '(上)河北联通石家庄二枢纽机房'},
+                                        {name: '(上)河北联通石家庄信息中心机房'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（单电信线路）'},
+                                        {name: '(上)上海电信春晓路机房'},
+                                        {name: '(上)北京电信兆维BGP机房'},
+                                        {name: '(上)北京联通木樨园BGP机房'},
+                                        {name: '(上)广东电信佛山南海平洲双线机房'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（单移动线路）'},
+                                        {name: '(上)浙江联通杭州滨江路机房'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（双线2）'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（单联通线路）'},
+                                        {name: '(上)浙江电信杭州萧山回澜路机房（双线3）'},
+                                        {name: '(上)北京联通南苑机房-02'}
+                                    ]
+                                },
+                                markLine : {
+                                    smooth:false,
+                                    effect : {
+                                        show: true,
+                                        scaleSize: 1,
+                                        period: 20,
+                                        color: '#fff',
+                                        shadowBlur: 5
+                                    },
+                                    itemStyle : {
+                                        normal: {
+                                            borderWidth:1,
+                                            lineStyle: {
+                                                type: 'solid'
+                                            }
+                                        }
+                                    },
+                                    data : alert_data
+                                }
+                            },
+                            {
+                                type: 'map',
+                                mapType: 'baiduBuilding',
+                                data: [],
+                                markPoint: {
+                                    symbol: 'emptyCircle',
+                                    clickable : false,
+                                    effect: {
+                                        show: true,
+
+                                    },
+                                    data: [
+                                    ]
+                                }
+                            }
+                        ]
+                    })//setoption end
+                    }//success function end
+                    });//ajax end
+                    });
+
+                    myChart.on('click', function (params) {
+                        window.open('/monitor/top10/icmp_graph/' + encodeURIComponent(params.name));
+                    });
+
+
+            }
+
+
+
+        );
+
+
+    };
+
+    </script>
+
+</body>

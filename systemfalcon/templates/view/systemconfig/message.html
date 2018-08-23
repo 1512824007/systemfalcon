@@ -1,0 +1,31 @@
+{% if messages %}
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">&times;</button>
+                        提交成功！
+                    </div>
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                     <div class="alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert"
+                            aria-hidden="true">&times;</button>
+                         用户名称不存在，请重新检查输入是否正确！
+                        </div>
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                     <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert"
+                            aria-hidden="true">&times;</button>
+                         提交信息！
+                        </div>
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        <div class="alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert"
+                            aria-hidden="true">&times;</button>
+                         提交失败！
+                        </div>
+
+                {% endif %}
+            {% endfor %}
+{% endif %}
+

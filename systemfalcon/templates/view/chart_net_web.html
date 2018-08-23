@@ -1,0 +1,203 @@
+{% extends "view/Base2.html" %}
+{% block content %}
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="panel-primary">
+                <div class="panel-heading">
+                    <h3 style="text-align: center" class="panel-title"><i class="fa fa-circle">max:{{ max_data|filesizeformat }}&nbsp;&nbsp;&nbsp;&nbsp;</i><i class="fa fa-circle-o">min:{{ min_data|filesizeformat }}</i></h3>
+                </div>
+                <div id="innerbody" class="panel-body">
+                    <div id="chart_big"style="min-width:90%;min-height:50%"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    $(function () {
+        Highchartsgraph();
+        datahandle();  //创建对数据处理的类
+    });
+
+    var colors_list = [
+                "#FF6A6A", "#00BFFF", "#A52A2A",
+                "#CDCD00", "#008878", "#FF0000",
+                "#00FF00", "#7B68EE", "#FF00FF",
+                "#EEAEEE", "#00AEEE", "#AEEEEE",
+
+                "#FFB90F", "#00B90F", "#00FFFF",
+                "#DC143C", "#BFEFFF", "#AA7500",
+                "#F0E68C", "#00E68C", "#AAE68C",
+                "#EE9A49", "#009A49", "#AA9A49",
+
+                "#FFA54F", "#00A54F", "#AAA54F",
+                "#8B4789", "#004789", "#AA4789",
+                "#00CDCD", "#00CDCD", "#AACDCD",
+                "#EE8262", "#008262", "#AA8262",
+
+                "#FF8C00", "#008C00", "#AA8C00",
+                "#8B3626", "#003626", "#AA3626",
+                "#00BFFF", "#00E8AA", "#AAE8AA",
+                "#EE7621", "#007621", "#AA7621"
+                ];
+
+    function Highchartsgraph() {
+
+        Highcharts.setOptions({
+            global: { useUTC: false }, // 北京时间
+            chart:{
+                zoomType:'x'// 水平缩放
+
+            },
+            credits:{
+                enabled:false // 禁用版权信息
+            },
+            colors: colors_list
+
+        });
+
+        var None = null;  //因为数据里面有None值，将js中的null代替None，这个不会报错。
+        obj1 = new datahandle({{ graph_data }});
+
+        //var data1 = obj1.filter(); // 此函数是过滤data,将所有null值的元素，删除。
+        var data1 = obj1.filter();
+        var series = [
+                      {
+                        name:'页面',
+                        data:data1
+                    }
+                     ];
+        var chart1 = new Highcharts.Chart({
+            chart:{
+                renderTo:'chart_big'
+            },
+            title:{
+                text:null
+            },
+
+            xAxis:{
+                type:'datetime',
+                dateTimeLabelFormats: { // x轴时间显示格式
+                    millisecond: '%H:%M:%S.%L',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                }
+
+            },
+            tooltip: {
+                dateTimeLabelFormats: { // 数据提示框时间显示格式
+                    millisecond: '%H:%M:%S.%L',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%Y-%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                },
+                valueDecimals: 2  // 保留两位小数
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+            series:series
+        });
+
+        Dyna_Add_Tags({{ GD|safe }});
+
+
+    }
+
+
+    function datahandle(data) {
+
+        this.fil_data = data;
+
+        this.filter=function () {  // 将数据中的null值过滤掉
+
+            var filterdata = _.filter(this.fil_data,function (i) {
+                return i[1] != null;
+            });
+            return filterdata
+        };
+
+        this.summary = function () {
+
+            var d = this.fil_data;
+
+            d = _.filter(d,function (i) {
+                return i[1] !== null;
+            });
+            // 这里的数据结构是 [[timestamp, value],[timestamp, value]......]
+            var last = d[d.length-1][1];
+            var max = _.max(d,function (i) {return i[1]})[1];  // i 就是每个[timestamp, value] return i[1]按照value找出最大,返回 i
+            var min = _.min(d,function (i) {return i[1]})[1];
+            var sum = sum = _.reduce(d,function (memo,i) {return memo + i[1]}, 0); // memo 是reduce的初始值
+            var avg = (sum/d.length);
+
+            return {
+                //last: last.toFixed(2), // 保留两位小数
+                max: max.toFixed(2),
+                min: min.toFixed(2),
+                //sum: sum.toFixed(2),
+                //avg: avg.toFixed(2)
+            };
+
+        }
+
+
+    }
+
+    function Dyna_Add_Tags(series) {
+        var tbody = $("#graph-tbody");
+        for(var i in series){
+            var background = colors_list[i]; // 背景颜色 就是列表的索引对应的颜色
+            var summary_list = new datahandle(series[i]['data']).summary();
+
+            var tr = '<tr>'
+            + '<td><span style="padding:1px"><span style="width: 10px;height: 10px;display: inline-block;margin-right: 5px;background:'
+            + background + '"></span></span>'+ series[i]["endpoint"] +'</td>'
+            //+ '<td>' + summary_list.last +'</td>'
+            + '<td>' + {{ max_data }} +'</td>'
+            //+ '<td>' + summary_list.avg +'</td>'
+            + '<td>' + {{ min_data }} +'</td></tr>';
+            // 每个标签都是需要导入。
+            tbody.append($(tr));
+        }
+    }
+
+
+
+</script>
+{% endblock %}
+

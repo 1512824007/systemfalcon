@@ -1,0 +1,193 @@
+{% extends "sysconf/Base5.html" %}
+{% block content %}
+<!--<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/forms.css">
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+
+    <title>监控系统</title>
+</head>
+-->
+    <div  class="monitorContainer" style="margin-top:0px">
+        <div class="Content" >
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="dashboardItemTitle">
+                            <span>模块增</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th><label class="required" for="class_mod">功能模块名：</label></th>
+                                    <th>
+                                        <textarea name="class_mod" id="class_mod" cols="50" rows="1"></textarea>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><label class="required" for="parameter">支持参数：</label></th>
+                                    <th>
+                                        <textarea name="parameter" id="parameter" cols="50" rows="2"></textarea>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><label class="required" for="result">返回结果：</label></th>
+                                    <th>
+                                        <textarea name="result" id="result" cols="50" rows="2" ></textarea>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><label class="required" for="api">调用方式：</label></th>
+                                    <th>
+                                        <textarea name="api" id="api" cols="50" rows="2"></textarea>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><label class="required" for="remarks">备注：</label></th>
+                                    <th>
+                                        <textarea  name ="remarks" id="remarks" cols="50" rows="3" ></textarea>
+                                    </th>
+                                </tr>
+                            </table>
+
+                            <div >
+                                <button id="add_module" class="btn btn-primary active" name="_save">
+                                    <span class="text">保存</span>
+                                </button>
+                                <button class="btn btn-primary active" >
+                                    <span class="text">取消</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--<div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="dashboardItemTitle" >
+                            <span>模块删改</span>
+                        </div>
+                        <div class="dashboardItemContent" >
+                            <div>
+                                <label for="" class="col-xs-6 text-left">模块:</label>
+                                <select name="module" id="module"   class="form-control vTextField required">
+                                {% for i in mod %}
+                                    <option value={{ i.module_name }}>{{ i.module_name}}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <button id="del_mod" class="btn btn-primary active" >删除该模块</button>
+                                <button id="change_mod" class="btn btn-primary active" >更改模块名</button>
+                            </div>
+                            <div id="c_mod" style="visibility:hidden;padding-top: 20px;">
+                                <label class="col-xs-6 text-left" >新的模块名称:</label>
+                                <input name="name" id="new_mod_name"  class="form-control" maxlength="80">
+                                <button id="change-mname" class="btn btn-primary active" >
+                                    <span class="text">保存模块名</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>-->
+                    <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+                </div>
+            </div>
+        </div>
+        <iframe id="if0" src="{% url 'classmod_list' %}" height="100%" scrolling="no" frameborder="0" width="100%"></iframe>
+    </div>
+
+<script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+<script>
+    function IFrameResize(){
+        var obj = parent.document.getElementById("cm"); //取得父页面IFrame对象
+        obj.height = this.document.body.scrollHeight; //调整父页面中IFrame的高度为此页面的高度
+    }
+    $(document).ready(function() {
+        if ({{ is_show|safe }}) {
+            $("#add_module").show();
+        }
+        $("#del_mod").click(function () {
+            var mod=document.getElementById("class_mod");
+            var index = mod.selectedIndex;
+            var module_name = mod.options[index].value;
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/class_mod_del/",
+                data:{
+                    "module_name":module_name,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    alert(data);
+                    location.reload();
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                }
+            });
+        });
+
+        $("#add_module").click(function () {
+            var class_mod = document.getElementById("class_mod").value;
+            var remarks = document.getElementById("remarks").value;
+            var parameter = document.getElementById("parameter").value;
+            var result = document.getElementById("result").value;
+            var api = document.getElementById("api").value;
+            $.ajax({
+                type: "post",
+                url: "/monitor/sysconf/classmod_man/",
+                data: {
+                    "class_mod": JSON.stringify(class_mod),
+                    "parameter": JSON.stringify(parameter),
+                    "result": JSON.stringify(result),
+                    "api": JSON.stringify(api),
+                    "remarks": JSON.stringify(remarks),
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+
+                success: function (data) {
+                    alert(data);
+                    location.reload();
+                },
+                error: function (data) {
+                    alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                }
+            });
+        });
+
+        $("#change_mod").click(function () {
+            var mod=document.getElementById("module");
+            var index = mod.selectedIndex;
+            var module_name = mod.options[index].value;
+            document.getElementById("c_mod").style.visibility='visible';
+            $("#new_mod_name").val(module_name);
+        });
+
+        $("#change-mname").click(function () {
+            var mod=document.getElementById("class_mod");
+            var index = mod.selectedIndex;
+            var module_name = mod.options[index].value;
+            var new_name = $("#new_mod_name").val();
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/class_mod_change/",
+                data:{
+                    "module_name":module_name,
+                    "new_name":new_name,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    alert(data);
+                    location.reload();
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                }
+            });
+        })
+    });
+
+</script>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block header %}
+
+    <style>
+        #innerbody .panel-body{
+            height: 300px;
+        }
+        .endpdropdown{
+            margin-right: 0px;
+        }
+        .endbutton,.endpdropdown ul,.endpdropdown ul li{
+            width: 300px;
+        }
+        .list-group-item{
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #707072;
+        }
+        .list-sort{
+            margin-top: 10px;
+            margin-right: 90px;
+        }
+
+
+    </style>
+
+
+{% endblock %}
+{% block content %}
+
+
+
+    <div class="row">
+        <div class="row">
+            <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>绘图区分组选择</h3>
+                        </div>
+                        <div id="innerbody" class="panel-body">
+                            <div class="col-xs-6">
+                                <div class="panel panel-danger">
+                                    <div class="panel-heading">
+                                    <h3 class="panel-title">系统组节点与参数选择</h3>
+                                    </div>
+                                    <ul class="list-group">
+                                    <li class="list-group-item">
+                                            <div class="dropdown endpdropdown">
+                                                <div class="col-xs-4 list-sort">服务请求数:</div>
+
+                                                    <button class="btn btn-default dropdown-toggle endbutton" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">endpoint
+                                                    <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                        {% for endpoint in SysEndpoint_list %}
+                                                            <li><a href="chart/ss/ed={{ forloop.counter0 }}">{{ endpoint }}</a></li>
+                                                        {% endfor %}
+                                                        <li role="separator" class="divider"></li>
+                                                        <li><a href="chart/big/nodeflow">此节点的总流入流出</a></li>
+                                                    </ul>
+
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="dropdown endpdropdown">
+                                                <div class="col-xs-4 list-sort">节点的流入流量,流出流量:</div>
+
+                                                    <button class="btn btn-default dropdown-toggle endbutton" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">endpoint
+                                                    <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                        {% for endpoint in SysEndpoint_list %}
+                                                            <li><a href="chart/ss/ed={{ forloop.counter0 }}">{{ endpoint }}</a></li>
+                                                        {% endfor %}
+                                                        <li role="separator" class="divider"></li>
+                                                        <li><a href="chart/big/nodeflow">此节点的总流入流出</a></li>
+                                                    </ul>
+
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="dropdown endpdropdown">
+                                                <div class="col-xs-4 list-sort">节点的cpu主要参数:</div>
+
+                                                    <button class="btn btn-default dropdown-toggle endbutton" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            endpoint
+                                            <span class="caret"></span>
+                                            </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                    <li><a href="#">Action</a></li>
+                                                    <li><a href="#">Another action</a></li>
+                                                    <li><a href="#">Something else here</a></li>
+                                                    <li role="separator" class="divider"></li>
+                                                    <li><a href="#">Separated link</a></li>
+                                                    </ul>
+
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="dropdown endpdropdown">
+                                                <div class="col-xs-4 list-sort">节点的...主要参数:</div>
+
+                                                    <button class="btn btn-default dropdown-toggle endbutton" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            endpoint
+                                            <span class="caret"></span>
+                                            </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                    <li><a href="#">Action</a></li>
+                                                    <li><a href="#">Another action</a></li>
+                                                    <li><a href="#">Something else here</a></li>
+                                                    <li role="separator" class="divider"></li>
+                                                    <li><a href="#">Separated link</a></li>
+                                                    </ul>
+
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="dropdown endpdropdown">
+                                                <div class="col-xs-4 list-sort">节点的...主要参数:</div>
+
+                                                    <button class="btn btn-default dropdown-toggle endbutton" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            endpoint
+                                            <span class="caret"></span>
+                                            </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                    <li><a href="#">Action</a></li>
+                                                    <li><a href="#">Another action</a></li>
+                                                    <li><a href="#">Something else here</a></li>
+                                                    <li role="separator" class="divider"></li>
+                                                    <li><a href="#">Separated link</a></li>
+                                                    </ul>
+
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="dropdown endpdropdown">
+                                                <div class="col-xs-4 list-sort">节点的...主要参数:</div>
+
+                                                    <button class="btn btn-default dropdown-toggle endbutton" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            endpoint
+                                            <span class="caret"></span>
+                                            </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                    <li><a href="#">Action</a></li>
+                                                    <li><a href="#">Another action</a></li>
+                                                    <li><a href="#">Something else here</a></li>
+                                                    <li role="separator" class="divider"></li>
+                                                    <li><a href="#">Separated link</a></li>
+                                                    </ul>
+
+                                            </div>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                               <div class="panel panel-success">
+                                    <div class="panel-heading">
+                                    <h3 class="panel-title">直播组节点与参数选择</h3>
+                                    </div>
+                                    <div class="panel-body">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                    <h3 class="panel-title">转播组节点与参数选择</h3>
+                                    </div>
+                                    <div class="panel-body">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                               <div class="panel panel-warning">
+                                    <div class="panel-heading">
+                                    <h3 class="panel-title">维护组节点与参数选择</h3>
+                                    </div>
+                                    <div class="panel-body">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

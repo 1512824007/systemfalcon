@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+</head>
+<body class="bg">
+    <div class="SignBox">
+        <img src="/static/public/image/sign-logo.png" alt="">
+        <div class="signinBox">
+            <h3>GOSUN 监控系统</h3>
+            <form action="/accounts/login/" method="post">
+                <div class="form-group rmt20" style="margin:0">
+                    <i class="glyphicon glyphicon-user"></i>
+                    <input class="form-control" name="username" type="text"/>
+                </div>
+                <div class="form-group rmb30">
+                    <i class="glyphicon glyphicon-lock"></i>
+                    <input class="form-control" name="password" type="password"/>
+                    {% csrf_token %}
+                </div>
+                <div class="text-center">
+                    <button class='btn btn-primary rmr15' name="login">登录</button>
+                    <a class="btn btn-default " href="/accounts/register/" target="_blank">注册</a>
+                    <!--<a class="btn btn-default " href="/forget/">忘记密码</a>-->
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

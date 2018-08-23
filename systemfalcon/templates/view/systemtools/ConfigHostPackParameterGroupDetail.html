@@ -1,0 +1,111 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+<div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+    <div class="row ">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+            {% include 'view/systemconfig/message.html' %}
+            <label class="col-md-12" style="color: #FF5733"></label>
+                <div class="dashboardItemTitle">
+                    <span class="col-md-12">采集参数组维护</span>
+                </div>
+                <div class="dashboardItemContent">
+                <form method="post" name="formName">
+                {% csrf_token %}
+                    {% for para in parameter %}
+                    <div class="col-md-12" style="padding: 10px;">
+                        <div class="panel panel-default" >
+                        <div class="panel-body">
+                            <div class="col-md-12">
+                                <label style="color: #000080;">采集参数组名称</label>
+                                <input class="form-control" name="para_group_name" value="{{ para.param_group_name }}" required/>
+                            </div>
+                            <div class="col-md-12" >
+                                <label style="color: #000080;">采集参数说明</label>
+                                <textarea class="form-control" name="para_group_context"  required >{{ para.param_group_content }}</textarea>
+                            </div>
+                            <div class="col-md-1">
+                                <label></label>
+                                  <input class="form-control btn btn-primary" type="submit" name="para_group_update" value="修改"/>
+                            </div>
+                        </div>
+
+                </div>
+                    </div>
+                    {% endfor %}
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#datatable').dataTable({
+             "pagingType":   "full_numbers",
+             "autoFill": true,
+             "iDisplayLength": 15,
+             "aLengthMenu": [[15,25, 50, 100, -1], [15,25, 50, 100, "All"]]
+        });
+    });
+
+/* 全选/反选
+   formName所在form的name值
+   checkboxName checkbox的name值
+   注意：所有checkbox的name值必须一样
+*/
+var checkedAll = false;
+function selectAll(formName,checkboxName){
+    var form = document.all.item(formName);
+    var elements = form.elements[checkboxName];
+    for(var i=0;i<elements.length;i++){
+        var e = elements[i];
+        if(checkedAll){
+            e.checked = false;
+            form.alls.checked = false;
+        }else{
+            e.checked = true;
+            form.alls.checked = true;
+        }
+    }
+    if(checkedAll){
+        checkedAll = false;
+    }else{
+        checkedAll = true;
+    }
+}
+/* 检查是否有checkbox被选中
+   checkbox的name值必须一样，这样才能达到全选效果
+*/
+function checkAll(formName,checkboxName){
+    var hasCheck = false;
+    var form = document.all.item(formName);
+    var elements = form.elements[checkboxName];
+    for(var i=0;i<elements.length;i++){
+        var e = elements[i];
+        if(e.checked){
+            hasCheck = true;
+        }
+    }
+    return hasCheck;
+}
+/* 执行操作 */
+function do_action(){
+    if(!checkAll("formName","id")){
+        alert("请至少选择一项！");
+    }
+}
+
+    function del() {
+        var msg =confirm("您真的确定要删除吗？");
+        if(msg==true){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+</script>
+{% endblock %}

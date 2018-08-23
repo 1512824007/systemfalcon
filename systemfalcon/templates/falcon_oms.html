@@ -1,0 +1,105 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+<div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="dashboardItem" style="min-height: 100px!important;">
+                <div class="dashboardItemTitle">
+                    <span ><i class="fa fa-pencil-square-o"></i>&nbsp;OMS系统与监控告警组关系列表</span>
+                    <h4 style="float: right; color: #1ABB9C;margin-left: 5px;"><i class="fa fa-cubes"></i>总数:&nbsp;&nbsp;{{ count }}&nbsp;条&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+                </div>
+                <div class="dashboardItemContent">
+                    <div class="box-header">
+                    </div>
+                    <div class="box-body box-padding">
+                        <table  class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        ID
+                                    </th>
+                                    <th>
+                                        业务类型
+                                    </th>
+                                    <th>
+                                        集群
+                                    </th>
+                                    <th>
+                                        简称
+                                    </th>
+                                    <th>
+                                        OMS集群ID
+                                    </th>
+                                    <th>
+                                        监控组ID
+                                    </th>
+                                    <th>
+                                         操作
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for db in result %}
+                                <tr>
+                                    <td>
+                                        {{ db.0 }}
+                                    </td>
+                                    <td>
+                                        {{ db.1 }}
+                                    </td>
+                                    <td>
+                                        {{ db.2 }}
+                                    </td>
+                                    <td>
+                                        {{ db.3 }}
+                                    </td>
+                                    <td>
+                                        {{ db.4 }}
+                                    </td>
+                                    <td>
+                                        {% if db.5 %}
+                                            {{ db.5 }}
+                                        {% else %}
+                                            {{ '' }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-danger" href="/monitor/MonitorManage/falcon_detail/{{ db.0 }}/">更新</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row">
+                             <div class="col-xs-6">
+                                   <div class="dataTables_info" id="example_info" role="alert" aria-live="polite" aria-relevant="all"></div>
+                             </div>
+                             <div class="col-xs-6" style="text-align:left;">
+                                  <div class="dataTables_paginate paging_simple_numbers" id="exmaple_paginate">
+                                       {% if result.start_index %}
+                                            <a href="?page={{ 1 }}">首页</a>
+                                       {% endif %}
+                                       {% if result.has_previous %}
+                                            <a href="?page={{ result.previous_page_number }}">&nbsp;&nbsp;&nbsp;上一页&nbsp;</a>
+                                       {% endif %}
+                                       <span class="current" style="color: #00aeef">
+                                            第{{ result.number }}页,共{{ result.paginator.num_pages }}页
+                                       </span>
+                                       {% if result.has_next %}
+                                            <a href="?page={{ result.next_page_number }}">&nbsp;&nbsp;下一页</a>
+                                       {% endif %}
+                                        {% if result.end_index %}
+                                            <a href="?page={{ result.paginator.num_pages }}">&nbsp;&nbsp;&nbsp;末页</a>
+                                       {% endif %}
+                                  </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

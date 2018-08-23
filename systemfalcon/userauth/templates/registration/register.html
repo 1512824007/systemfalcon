@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+</head>
+<body class="bg">
+<div class="SignBox">
+    <img src="/static/public/image/sign-logo.png" alt="">
+    <div class="guide">
+        <div id="guide1" class="active">
+            <p>① 基本信息</p>
+            <p class="Right"></p>
+        </div>
+        <div id="guide2" class="">
+            <p class="Right leftP"></p>
+            <p class="rpl10">② 设置密码</p>
+            <p class="Right"></p>
+        </div>
+        <div id="guide3" class="">
+            <p class="Right leftP"></p>
+            <p class="rpl10">③ 详细信息</p>
+            <p class="Right"></p>
+        </div>
+        <div id="guide4" class="">
+            <p class="Right leftP"></p>
+            <p class="rpl10">④ 完成注册</p>
+        </div>
+    </div>
+    <div class="signUpBox" id="u15083_state0">
+        <h3 class="rmb30">GOSUN 监控系统</h3>
+        <div class="form-group">
+            {{ up_reg.username }}
+        </div>
+        <div id="uemail" class="form-group">
+            {{ up_reg.email }}
+        </div>
+        <div class="form-group" style="position: relative;">
+            {{ up_reg.code }}
+            <button class="vertifyCode btn btn-default" onclick="gencode()">发送验证码至邮箱</button>
+        </div>
+        <div class="text-center">
+            <button data-id="1" id="u15108" class='btn btn-primary rmr15 nextBtn'>下一步</button>
+        </div>
+    </div>
+
+    <div class="signUpBox" id="u15083_state1" style="visibility: hidden; display: none;">
+        <h3 class="rmb30">GOSUN 监控系统</h3>
+        <div class="form-group">
+            {{ up_reg.password }}
+        </div>
+        <div class="form-group">
+            {{ up_reg.password2 }}
+        </div>
+        <div class="text-center">
+            <button data-id="2"  id="u15109" class='btn btn-primary rmr15 nextBtn'>上一步</button>
+            <button data-id="2"  id="u15110" class='btn btn-primary rmr15 nextBtn'>下一步</button>
+        </div>
+    </div>
+
+    <div class="signUpBox" id="u15083_state2" style="visibility: hidden; display: none;">
+        <h3 class="rmb30">GOSUN 监控系统</h3>
+        <div class="form-group">
+            {{ up_reg.real_name }}
+        </div>
+        <div class="form-group chosenSelect">
+            <select id = "select_department">
+                <option selected="" value="请选择所属部门">请选择所属部门</option>
+                {% for i in group %}
+                    <option value="{{ i.id }}">{{ i.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <span style="margin-right: 20px;">角色：</span>
+            <input id="u15154_input" type="radio" value="True" name="role" >
+            <span>主管</span>
+            <input id="u15156_input" type="radio" value="False" name="role" checked="">组员
+               <!-- <label for="u15154_input">主管</label>
+                <label for="u15156_input">组员</label>-->
+        </div>
+        <div class="form-group">
+            {{ up_reg.phone }}
+        </div>
+        <div class="text-center">
+            <button data-id="3" id="u15111" class='btn btn-primary rmr15 nextBtn'>上一步</button>
+            <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+            <button data-id="3" id="register" class='btn btn-primary rmr15 nextBtn'>注册</button>
+        </div>
+    </div>
+
+    <div class="signUpBox" id="u15083_state3" style="visibility: hidden; display: none;">
+        <h3 class="rmb30">GOSUN 监控系统</h3>
+        <div style="padding: 80px 50px;">
+            <p>您已完成注册，可选择去 <a href="/accounts/login/">登陆系统</a> </p>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/public/plugin/jquery-1.12.4/jquery.min.js"></script>
+<script>
+    function gencode() {
+        var email = document.getElementById("uemail").childNodes[1].value;
+        $.ajax({
+            url:"/accounts/register/captcha/",
+            data:{
+                "email":JSON.stringify(email)
+            },
+            success:function(data) {
+                alert(data);
+            },
+            error:function(data) {
+                alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+            }
+        });
+    }
+    $(document).ready(function () {
+        $("#u15108").click(function () {
+            $("#u15083_state0").attr("style","visibility: hidden; display: none;");
+            $("#u15083_state1").attr("style","visibility: inherit;");
+            $("#guide1").removeClass("active");
+            $("#guide2").addClass('active');
+        });
+        $("#u15109").click(function () {
+            $("#u15083_state1").attr("style","visibility: hidden; display: none;");
+            $("#u15083_state0").attr("style","visibility: inherit;");
+            $("#guide2").removeClass("active");
+            $("#guide1").addClass('active');
+        });
+        $("#u15110").click(function () {
+            $("#u15083_state1").attr("style","visibility: hidden; display: none;");
+            $("#u15083_state2").attr("style","visibility: inherit;");
+            $("#guide2").removeClass("active");
+            $("#guide3").addClass('active');
+        });
+        $("#u15111").click(function () {
+            $("#u15083_state2").attr("style","visibility: hidden; display: none;");
+            $("#u15083_state1").attr("style","visibility: inherit;");
+            $("#guide3").removeClass("active");
+            $("#guide2").addClass('active');
+        });
+        $("#register").click(function () {
+            var sum = 0;
+            $("input").each(function(i) {
+               var text = $(this).val();
+               if(text == ""){
+                   sum+=1;
+               }
+            });
+            if (sum == 0){
+                var obj = document.getElementById("select_department");
+                var index = obj.selectedIndex;
+                var department = obj.options[index].value;
+                if (department == "请选择所属部门"){
+                    alert(department);
+                }
+                else {
+                    $.ajax({
+                        method:"post",
+                        url:"",
+                        data:{
+                            "username":JSON.stringify($("input")[0].value),
+                            "email":JSON.stringify($("input")[1].value),
+                            "code":$("input")[2].value,
+                            "password":$("input")[3].value,
+                            "password2":$("input")[4].value,
+                            "real_name":JSON.stringify($("input")[5].value),
+                            "department":department,
+                            "role":$("input[name='role']:checked").val(),
+                            "phone":JSON.stringify($("input")[8].value),
+                            'csrfmiddlewaretoken': $('#csrf_token').val()
+                        },
+                        success:function(data) {
+                            if (data == 0){
+                                $("#u15083_state2").attr("style", "visibility: hidden; display: none;");
+                                $("#u15083_state3").attr("style", "visibility: inherit;");
+                            }
+                            else{
+                                alert(data);
+                            }
+                        },
+                        error:function(data) {
+                            alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                        }
+                    });
+                }
+            }
+            else {
+                alert("字段尚位填充完整")
+            }
+        });
+    });
+
+</script>
+</html>

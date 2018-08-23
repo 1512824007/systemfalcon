@@ -1,0 +1,41 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/public/css/demo.css">
+<link rel="stylesheet" href="/static/public/css/zTreeStyle.css">
+<script src="/static/public/js/jquery.ztree.core-3.5.min.js"></script>
+                <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+                    <div class="row ">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                            {% include 'view/systemconfig/message.html' %}
+                            <label class="col-md-12" style="color: #2ECC71">{{ delete|safe }}</label>
+
+                                <div class="dashboardItemTitle">
+                                    <span class="col-md-12">采集工具列表</span>
+                                </div>
+                                <div class="dashboardItemContent">
+                                    <div style="width: 350px;float: left">
+                                        <ul id="treeDemo" class="ztree" style="margin-top: 20px"></ul>
+                                    </div>
+                                    <iframe class="col-md-8" id='if' height="100%" scrolling="no" frameborder="0" width="100%"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<script>
+    var zTreeObj;
+    // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+    var setting = {};
+    // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
+    var zNodes = {{ znode|safe }};
+    function iframe_load(obj) {
+        var url = obj;
+        $('#if').attr('src',url)
+    }
+    $(document).ready(function() {
+        zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    });
+</script>
+{% endblock %}

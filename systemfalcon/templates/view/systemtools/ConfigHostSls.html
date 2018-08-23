@@ -1,0 +1,54 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+                <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+                    {% include 'view/systemconfig/message.html' %}
+                       <label class="col-md-12" style="color: #61ff55">{{ add_mod|safe }}</label>
+                       <label class="col-md-12" style="color: #FF5733">{{ add_mod_error|safe }}</label>
+                       <label class="col-md-12" style="color: #FF5733">{{ info|safe }}</label>
+                       <label class="col-md-12" style="color: #FF5733">{{ add_mod_other_error|safe }}</label>
+                    <div class="row ">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemTitle">
+                                    <span>添加SLS文件</span>
+                                </div>
+                                <div class="dashboardItemContent">
+                                <form method="post">
+                                {% csrf_token %}
+                                <div class="dashboardItemContent chosenSelect">
+                                    <div class="row">
+                                          <span class="col-md-12" style="color: #6e6fff">SLS文件添加时需要注意后缀名称（.sls）：如 cfg.sls&nbsp;&nbsp;&nbsp;
+                                          <input  type="submit" class="btn btn-primary" name="adding" value="添加"/>
+                                            <a href="/monitor/MonitorManage/ConfigHost/detail/{{ host_id }}/" class="btn btn-primary">返回</a>
+                                          </span>
+                                    </div>
+                                </div>
+                                     <div style="width: auto;height: auto;padding-left:10px;">
+                                         <hr width=100% size=3 color=#00ffff style="FILTER: alpha(opacity=100,finishopacity=0,style=3)">
+                                         <label class="control-label">主机名称：<label class="text-info">{% for i in host_list %}{{ i.hostname }}{% endfor %}</label></label>
+                                         <div class="form-group">
+                                            <label class="control-label">SLS文件名称</label>
+                                                <input class="form-control" name="sls_name" type="text" required>
+                                         </div>
+                                        <div class="form-group">
+                                            <label class="control-label">SLS内容</label>
+                                         <textarea class="text-info" style="width: 100%;height: 200px;" name="sls_info"></textarea>
+                                        </div>
+                                         <div class="form-group">
+                                            <label class="control-label">SLS备注</label>
+                                                <input class="form-control" name="sls_context" type="text" >
+                                         </div>
+
+                                          <div class="form-group">
+                                            <input type="hidden" name="host_id"  class="form-control" value="{{ host_id }}"/>
+                                         </div>
+                                     </div>
+                                    <div>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+{% endblock %}

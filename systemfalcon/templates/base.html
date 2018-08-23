@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDN监控系统</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/local.css" />
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link rel="stylesheet" type="text/css" href="/static/css/all.min.css" />
+    <link id="gridcss" rel="stylesheet" type="text/css" href="/static/css/all.min.css" />
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="/static/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="/static/js/gridData.js"></script>
+
+    <script src="/static/js/echarts-all-3.js"></script>
+
+    <script src="/static/js/china.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+     <script src="/static/js/underscore.js"></script>
+    <script src="/static/Hchartscode/highcharts.js"></script>
+    <script src="/static/Hchartscode/modules/data.js"></script>
+
+</head>
+<body>
+    <div id="container">
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav navbar-left navbar-user">
+
+                    <li class="dropdown user-dropdown">
+                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard "></i> dashbord <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    <li><a href="/monitor/dashboard/"><i class="fa fa-bug"></i> 资源监控</a></li>
+                        <li class="divider"></li>
+                    <li><a href="/monitor/faultlists/" target="_blank"><i class="fa fa-list"></i> 告警列表</a></li>
+                        <li class="divider"></li>
+                    <li><a href="/monitor/hcgraph/index/"><i class="fa fa-map"></i> 绘 图</a></li>
+                        <li class="divider"></li>
+                    <li><a href="/monitor/top10/index/"><i class="fa fa-bookmark-o"></i> TOP10</a></li>
+                        <li class="divider"></li>
+                    <li><a href="/monitor/idc/"><i class="fa fa-desktop"></i> 机房状态</a></li>
+                    </ul>
+                     </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-left navbar-user">
+                    <li class="dropdown user-dropdown">
+                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-briefcase"></i> 维护管理 <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    <li><a href="/monitor/falcon/" target="_blank"><i class="fa fa-globe"></i> 告警关系组管理</a></li>
+                    </ul>
+                     </li>
+                </ul>
+		 <ul class="nav navbar-nav navbar-left navbar-user">
+                    <li class="dropdown user-dropdown">
+                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-commenting-o"></i> 历史告警 <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    <li><a href="/monitor/alarm/" target="_blank"><i class="fa fa-flag-o"></i> 告警信息查询管理</a></li>
+
+                    </ul>
+                     </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> 信息 <span class="badge">2</span> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">2条消息</li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell"></i></span>
+                                    <span class="message">告警信息</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ request.user }}<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> 退出</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li>
+                        <form class="navbar-search">
+                            <input type="text" placeholder="Search" class="form-control">
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+            {% block content %}
+            {% endblock %}
+    </div>
+    <!-- /#wrapper -->
+    </div>
+    <div class="panel-footer">
+      <div class="container">
+      </div>
+    </div>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            var performance = [12, 43, 34, 22, 12, 33, 4, 17, 22, 34, 54, 67],
+                visits = [123, 323, 443, 32],
+                traffic = [
+                {
+                    Source: "Direct", Amount: 323, Change: 53, Percent: 23, Target: 600
+                },
+                {
+                    Source: "Refer", Amount: 345, Change: 34, Percent: 45, Target: 567
+                },
+                {
+                    Source: "Social", Amount: 567, Change: 67, Percent: 23, Target: 456
+                },
+                {
+                    Source: "Search", Amount: 234, Change: 23, Percent: 56, Target: 890
+                },
+                {
+                    Source: "Internal", Amount: 111, Change: 78, Percent: 12, Target: 345
+                }];
+
+
+            $("#shieldui-chart1").shieldChart({
+                theme: "dark",
+
+                primaryHeader: {
+                    text: "Visitors"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                dataSeries: [{
+                    seriesType: "area",
+                    collectionAlias: "Q Data",
+                    data: performance
+                }]
+            });
+
+            $("#shieldui-chart2").shieldChart({
+                theme: "dark",
+                primaryHeader: {
+                    text: "Traffic Per week"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                dataSeries: [{
+                    seriesType: "pie",
+                    collectionAlias: "traffic",
+                    data: visits
+                }]
+            });
+
+            $("#shieldui-grid1").shieldGrid({
+                dataSource: {
+                    data: traffic
+                },
+                sorting: {
+                    multiple: true
+                },
+                rowHover: false,
+                paging: false,
+                columns: [
+                { field: "Source", width: "170px", title: "Source" },
+                { field: "Amount", title: "Amount" },
+                { field: "Percent", title: "Percent", format: "{0} %" },
+                { field: "Target", title: "Target" },
+                ]
+            });
+        });
+    </script>
+</body>
+</html>

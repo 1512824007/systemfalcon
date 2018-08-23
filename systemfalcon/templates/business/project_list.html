@@ -1,0 +1,69 @@
+{% extends "layout/base.html" %}
+{% block content %}
+          {% load dict_lookup %}
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">项目列表</h3>
+                  <a href="{% url 'project_create' %}" class="btn btn-sm btn-default pull-right">新增项目</a>
+                </div>
+              </div>
+            </div>
+            {% for each in projects %}
+            {% with project_abbr_name=each.abbr_name %}
+            {% with project_device_count=device_count|dict_lookup:project_abbr_name %}
+            <div class="col-xs-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title">{{ each }}</h4>
+                  <div class="pull-right">
+                    <a href="{% url 'project_update' each.id %}" class="btn btn-sm btn-default">更新</a>
+                    <a href="{% url 'cluster_create' each.id %}" class="btn btn-sm btn-default">新增集群</a>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <table class="table">
+                    <tr>
+                      <td>名称: </td>
+                      <td>{{ each.name }}(服{{ project_device_count.servers }}/虚{{ project_device_count.vms }})</td>
+                    </tr>
+                    <tr>
+                      <td>简写: </td>
+                      <td>{{ each.abbr_name }}</td>
+                    </tr>
+                    <tr>
+                      <td>所有人: </td>
+                      <td>{{ each.owner }}</td>
+                    </tr>
+                    <tr>
+                      <td>状态: </td>
+                      <td>
+                        {% if each.public %}
+                        <span class="badge bg-yellow">公共</span>
+                        {% else %}
+                        <span class="badge bg-green">私有</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>集群: </td>
+                      <td>
+                        {% for cluster in each.cluster_set.all %}
+                        {% with cluster_abbr_name=cluster.abbr_name %}
+                        {% with cluster_device_count=project_device_count.clusters|dict_lookup:cluster_abbr_name %}
+                        <a href="{% url 'cluster_detail' each.id cluster.id %}" class="badge bg-green">{{ cluster.name }}(服{{ cluster_device_count.servers }}/虚{{ cluster_device_count.vms }})</a>
+                        {% endwith %}
+                        {% endwith %}
+                        {% endfor %}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            {% endwith %}
+            {% endwith %}
+            {% endfor %}
+          </div>
+{% endblock %}

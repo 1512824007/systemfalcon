@@ -1,0 +1,63 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+        <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+            <div class="row ">
+                <div class="col-xs-12">
+                    <div class="dashboardItem">
+                        {% include 'view/systemconfig/message.html' %}
+                        <div class="dashboardItemTitle">
+                            <span>添加新配置文件</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <form method="post">{% csrf_token %}
+                                <div class="dashboardItemContent chosenSelect">
+                                    <div class="row">
+                                        <span class="col-md-12" style="color: red">默认文件存放根目录，如有子目录：file1/fil2/a.json&nbsp;&nbsp;&nbsp;
+                                            <input  type="submit" class="btn btn-primary" name="adding" value="添加"/>
+                                            <a href="/monitor/MonitorManage/ConfigFileList/" class="btn btn-primary">配置列表</a>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="width: auto;height:400px;padding-left:10px;">
+                                    <hr width=100% size=3 color=#00ffff style="FILTER: alpha(opacity=100,finishopacity=0,style=3)">
+                                    <label style="padding: 5px;">目录及文件名</label>
+                                    <div><input type="text" name="filename" style="width: 100%;height: 100%;" class="text-info" required="required"/></div>
+                                    <label style="padding: 5px;">文件具体内容</label>
+                                    <textarea class="text-info" style="width: 100%;height: 100%;" name="info"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="width: 98%;background: #f1f1f1;height: 30px;margin:30px auto;"></div>
+        </div>
+    </div>
+</div>
+<a class="backTop"><i class="glyphicon glyphicon-menu-up"></i></a>
+
+<!--<script>
+    monitor.DashBoard();
+</script>
+<script>
+    monitor.TroubleList();
+</script>
+<script>
+    monitor.Device();
+</script>
+<script>
+    monitor.MonitorInfo();
+</script>
+<script>
+    monitor.ServerRoom();
+</script>
+<script>
+    monitor.TroubleBI();
+</script>
+<script>
+    monitor.TroubleInfo();
+</script>
+<script>
+    monitor.UserRequest();
+</script>-->
+{% endblock %}

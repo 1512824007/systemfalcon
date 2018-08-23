@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDN监控系统</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/local.css" />
+
+
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-12">
+	<div class="dashboardItemContent" style="position: relative;">
+	    <div class="row" style="padding:20px">
+            <div class="col-xs-6">
+                <a  class="btn btn-success" onclick=show('live')>直播</a>
+                <a  class="btn btn-success" onclick=show('media')>LDC</a>
+                <a  class="btn btn-success" onclick=show('web')>页面</a>
+            </div>
+            <div class="col-xs-6">
+	        <span class="rmr10" style="float: left;padding-top: 5px;">区域:</span>
+                <select name="" id="" value="1" style="width: 120px;height: 30px;"><option value="1">北京</option></select>
+            </div>
+		<div class="row" style="padding:10px">
+		</div>
+		
+            <div  style="width: auto;height: auto;">
+                <iframe id="live" src="/monitor/hcgraph/index/chart/room/live/{{ roomname }}" width="100%" height="430px" scrolling="no" frameborder="0" > </iframe>
+            </div>
+            <div  style="width: auto;height: auto;">
+                <iframe id="media" src="/monitor/hcgraph/index/chart/room/media/{{ roomname }} "  width="100%" height="430px" scrolling="no" frameborder="0" style="display: none" > </iframe>
+            </div>
+            <div style="width: auto;height: auto; ">
+                <iframe id="web" src="/monitor/hcgraph/index/chart/room/web/{{ roomname }}" width="100%" height="430px" scrolling="no" frameborder="0" style="display: none" > </iframe>
+            </div>
+                <script type="text/javascript" >
+                    function show(id){
+                    var showDiv=document.getElementById(id);
+                    var divList=document.getElementsByTagName('iframe');
+                    //alert(divList.length);
+                    for(i=0;i<divList.length;i++){
+                    if(divList[i].id==id){
+                    divList[i].style.display='block';
+                    }
+                    else{
+                    divList[i].style.display='none';
+                    }
+                    }
+                    }
+                </script>
+        </div>
+               </div>
+              </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+

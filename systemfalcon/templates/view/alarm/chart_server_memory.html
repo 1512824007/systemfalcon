@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDN监控系统</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/local.css" />
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link rel="stylesheet" type="text/css" href="/static/css/all.min.css" />
+    <link id="gridcss" rel="stylesheet" type="text/css" href="/static/css/all.min.css" />
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="/static/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="/static/js/gridData.js"></script>
+
+    <script src="/static/js/echarts-all-3.js"></script>
+    <script src="/static/js/china.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+    <script src="/static/js/underscore.js"></script>
+    <script src="/static/Hchartscode/highcharts.js"></script>
+    <script src="/static/Hchartscode/modules/data.js"></script>
+</head>
+<body>
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div id="innerbody" class="panel-body">
+                    <div id="chart_big" style="min-width:90%;min-height:50%"></div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="graph-mainparameter">
+                                <table class="Table" style="margin: 0px;border: 0px;color:#c5c5c7;background-color: white">
+                                    <tbody id="graph-tbody">
+                                        <tr>
+                                            <th >&nbsp;</th>
+                                            <th >&nbsp;&nbsp;last</th>
+                                            <th >&nbsp;&nbsp;min</th>
+                                            <th >&nbsp;&nbsp;avg</th>
+                                            <th >&nbsp;&nbsp;max</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+<script>
+
+
+    $(function () {
+
+        Highchartsgraph();
+        datahandle();  //创建对数据处理的类
+        Dyna_Add_Tags(); // 动态添加绘图下面的显示last,min,avg,max标签
+
+
+    });
+
+
+    var name1 = "{{ graph_data.0.counter }}";
+{#    var name2 = "{{ graph_data.1.counter }}";#}
+{#    var name3 = "{{ graph_data.2.counter }}";#}
+{#    console.assert(name1);#}
+{#    console.assert(name2);#}
+    var colors_list = [
+                "#FF6A6A", "#00BFFF", "#A52A2A",
+                "#CDCD00", "#008878", "#FF0000",
+                "#00FF00", "#7B68EE", "#FF00FF",
+                "#EEAEEE", "#00AEEE", "#AEEEEE",
+
+                "#FFB90F", "#00B90F", "#00FFFF",
+                "#DC143C", "#BFEFFF", "#AA7500",
+                "#F0E68C", "#00E68C", "#AAE68C",
+                "#EE9A49", "#009A49", "#AA9A49",
+
+                "#FFA54F", "#00A54F", "#AAA54F",
+                "#8B4789", "#004789", "#AA4789",
+                "#00CDCD", "#00CDCD", "#AACDCD",
+                "#EE8262", "#008262", "#AA8262",
+
+                "#FF8C00", "#008C00", "#AA8C00",
+                "#8B3626", "#003626", "#AA3626",
+                "#00BFFF", "#00E8AA", "#AAE8AA",
+                "#EE7621", "#007621", "#AA7621"
+                ];
+
+    function Highchartsgraph() {
+
+        Highcharts.setOptions({
+            global: { useUTC: false }, // 北京时间
+            chart:{
+{#                borderWidth: 1, // 图标边框（最外层的边框）#}
+{#                borderRadius:'5px',#}
+                plotBackgroundColor: 'rgba(255, 255, 255, .9)',//绘图区背景颜色，以及透明度
+{#                plotBorderWidth:1, // 绘图区边框（内层边框）#}
+                zoomType:'x'// 水平缩放
+
+            },
+            credits:{
+                enabled:false // 禁用版权信息
+            },
+            colors: colors_list
+
+        });
+
+        var None = null;  //因为数据里面有None值，将js中的null代替None，这个不会报错。
+
+        obj1 = new datahandle({{ graph_data.0.data }});
+{#        obj2 = new datahandle({{ graph_data.1.data }});#}
+{#        obj3 = new datahandle({{ graph_data.2.data }});#}
+{#        obj1 = new datahandle([[1496731140000, 9890.933333], [1496731200000, 9809.866667], [1496731260000, 9874.266667], [1496731320000, 10697.2], [1496731380000, 9896.133333], [1496731440000, 9755.466667], [1496731500000, 9841.6], [1496731560000, 9730.4], [1496731620000, 9810.4], [1496731680000, 9782.533333], [1496731740000, 9999.466667], [1496731800000, 9884.0], [1496731860000, 9846.933333], [1496731920000, 9851.333333], [1496731980000, 9637.466667], [1496732040000, 10160.8], [1496732100000, 9844.133333], [1496732160000, 9900.666667], [1496732220000, 9920.666667], [1496732280000, 9791.333333], [1496732340000, 10802.933333], [1496732400000, 11516.533333], [1496732460000, 11645.2], [1496732520000, 9880.8], [1496732580000, 9930.666667], [1496732640000, 10693.066667], [1496732700000, 10830.666667], [1496732760000, 9740.533333], [1496732820000, 10692.133333], [1496732880000, 9770.533333], [1496732940000, 9832.0], [1496733000000, 10698.933333], [1496733060000, 9926.133333], [1496733120000, 10687.866667], [1496733180000, 10803.2], [1496733240000, 10757.733333], [1496733300000, 10788.0], [1496733360000, 9798.133333], [1496733420000, 9952.133333], [1496733480000, 9865.6], [1496733540000, 9897.466667], [1496733600000, 9812.4], [1496733660000, 9872.133333], [1496733720000, 9772.0], [1496733780000, 9820.666667], [1496733840000, 9943.466667], [1496733900000, 9989.066667], [1496733960000, 9826.266667], [1496734020000, 9759.466667], [1496734080000, 9849.6], [1496734140000, 9873.333333], [1496734200000, 9783.6], [1496734260000, 9891.733333], [1496734320000, 9848.266667], [1496734380000, 9837.733333], [1496734440000, 9805.466667], [1496734500000, 9846.4], [1496734560000, 9860.8], [1496734620000, 9806.666667], [1496734680000, 9994.533333]]);#}
+{#        obj2 = new datahandle([[1496731140000, 5970.933333], [1496731200000, 6727.466667], [1496731260000, 5850.933333], [1496731320000, 6650.4], [1496731380000, 5822.8], [1496731440000, 5823.6], [1496731500000, 5692.666667], [1496731560000, 5948.8], [1496731620000, 5688.133333], [1496731680000, 5832.266667], [1496731740000, 5961.733333], [1496731800000, 6775.466667], [1496731860000, 5843.066667], [1496731920000, 5725.333333], [1496731980000, 6951.733333], [1496732040000, 6203.6], [1496732100000, 5832.4], [1496732160000, 5837.466667], [1496732220000, 5686.666667], [1496732280000, 5969.466667], [1496732340000, 5862.666667], [1496732400000, 10415.6], [1496732460000, 7877.6], [1496732520000, 5941.733333], [1496732580000, 5845.866667], [1496732640000, 5824.266667], [1496732700000, 5784.133333], [1496732760000, 5972.533333], [1496732820000, 5862.0], [1496732880000, 5807.733333], [1496732940000, 5844.666667], [1496733000000, 6670.133333], [1496733060000, 5836.4], [1496733120000, 5992.666667], [1496733180000, 5850.533333], [1496733240000, 5899.066667], [1496733300000, 5863.333333], [1496733360000, 5909.333333], [1496733420000, 5868.666667], [1496733480000, 5839.333333], [1496733540000, 5818.266667], [1496733600000, 6899.733333], [1496733660000, 5673.333333], [1496733720000, 5967.866667], [1496733780000, 5828.266667], [1496733840000, 6250.266667], [1496733900000, 5703.733333], [1496733960000, 5949.6], [1496734020000, 5700.533333], [1496734080000, 5835.066667], [1496734140000, 10183.333333], [1496734200000, 5684.533333], [1496734260000, 5836.933333], [1496734320000, 5851.066667], [1496734380000, 6042.666667], [1496734440000, 5854.266667], [1496734500000, 5869.066667], [1496734560000, 5694.133333], [1496734620000, 5848.666667], [1496734680000, 5954.4]]);#}
+{#        console.log(obj1);#}
+{#        console.log(obj2);#}
+        var data1 = obj1.filter(); // 此函数是过滤data,将所有null值的元素，删除。
+{#        var data2 = obj2.filter();#}
+{#        var data3 = obj3.filter();#}
+        var series = [
+                      {
+                        name:name1,
+                        data:data1
+                    }
+                     ];
+        var chart1 = new Highcharts.Chart({
+            chart:{
+                renderTo:'chart_big'
+            },
+            title:{
+                text:null
+            },
+
+            xAxis:{
+                type:'datetime',
+                dateTimeLabelFormats: { // x轴时间显示格式
+                    millisecond: '%H:%M:%S.%L',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                }
+
+            },
+            tooltip: {
+                dateTimeLabelFormats: { // 数据提示框时间显示格式
+                    millisecond: '%H:%M:%S.%L',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%Y-%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                },
+                valueDecimals: 2  // 保留两位小数
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+            series:series
+        });
+
+        Dyna_Add_Tags({{ GD|safe }});
+
+
+    }
+
+
+    function datahandle(data) {
+
+        this.fil_data = data;
+
+        this.filter=function () {  // 将数据中的null值过滤掉
+
+            var filterdata = _.filter(this.fil_data,function (i) {
+                return i[1] != null;
+            });
+            return filterdata
+        };
+
+        this.summary = function () {
+
+            var d = this.fil_data;
+
+            d = _.filter(d,function (i) {
+                return i[1] !== null;
+            });
+            // 这里的数据结构是 [[timestamp, value],[timestamp, value]......]
+            var last = d[d.length-1][1];
+            var max = _.max(d,function (i) {return i[1]})[1];  // i 就是每个[timestamp, value] return i[1]按照value找出最大,返回 i
+            var min = _.min(d,function (i) {return i[1]})[1];
+            var sum = sum = _.reduce(d,function (memo,i) {return memo + i[1]}, 0); // memo 是reduce的初始值
+            var avg = (sum/d.length);
+
+            return {
+                last: last.toFixed(2), // 保留两位小数
+                max: max.toFixed(2),
+                min: min.toFixed(2),
+                sum: sum.toFixed(2),
+                avg: avg.toFixed(2)
+            };
+
+        }
+
+
+    }
+
+    function Dyna_Add_Tags(series) {
+        var tbody = $("#graph-tbody");
+        for(var i in series){
+            var background = colors_list[i]; // 背景颜色 就是列表的索引对应的颜色
+            var summary_list = new datahandle(series[i]['data']).summary();
+
+            var tr = '<tr>'
+            + '<td><span style="padding:1px"><span style="width: 10px;height: 10px;display: inline-block;margin-right: 5px;background:'
+            + background + '"></span></span>'+ series[i]["endpoint"] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.last + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.min + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.avg + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.max + '&nbsp;&nbsp;' +'</td></tr>';
+            // 每个标签都是需要导入。
+            tbody.append($(tr));
+        }
+    }
+</script>
+</body>
+</html>
+
+

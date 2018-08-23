@@ -1,0 +1,103 @@
+{% extends "view/Base2.html" %}
+{% block content %}
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+        <div class="dashboardItemContent">
+            <div>
+                <div id="chart_big" style="min-width:100%;min-height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(function () {
+        Highchartsgraph();
+    });
+
+    function Highchartsgraph() {
+        Highcharts.setOptions({
+            global: { useUTC: false }, // 北京时间
+            chart:{
+                zoomType:'x'
+            },
+            credits:{
+                enabled:false // 禁用版权信息
+            },
+        });
+
+    	var options_net = {
+        	chart: {
+            	renderTo: 'chart_big',
+            	panning: true,
+            	panKey:'shift'
+        	},
+            title:{
+                text: '机房带宽'
+            },
+        	xAxis:{
+                	type:'datetime',
+                	dateTimeLabelFormats: { // x轴时间显示格式
+                    	millisecond: '%H:%M:%S.%L',
+                    	second: '%H:%M:%S',
+                    	minute: '%H:%M',
+                    	hour: '%H:%M',
+                    	day: '%m-%d',
+                    	week: '%m-%d',
+                    	month: '%Y-%m',
+                    	year: '%Y'
+                	}
+            	},
+        	series: [{name:'',},]
+    	};
+
+        var ec = ["/","/web/","/live/","/media/"]
+        var x_name = ["总带宽","页面","直播","点播"]
+        var x = 0;
+        host = {{ roomname|safe }}
+        for(i in ec){
+            a = ec[i];
+            $.ajaxSettings.async = false;
+            temp = options_net.series[x];
+            temp.name = x_name[i];
+
+            colors = [
+            "#2aef4f",
+            "#CDCD00", "#008878", "#FF0000",
+            "#00FF00", "#7B68EE", "#FF00FF",
+            "#EEAEEE", "#00AEEE", "#AEEEEE",
+
+            "#FFB90F", "#00B90F", "#00FFFF",
+            "#DC143C", "#BFEFFF", "#AA7500",
+            "#F0E68C", "#00E68C", "#AAE68C",
+            "#EE9A49", "#009A49", "#AA9A49",
+
+            "#FFA54F", "#00A54F", "#AAA54F",
+            "#8B4789", "#004789", "#AA4789",
+            "#00CDCD", "#00CDCD", "#AACDCD",
+            "#EE8262", "#008262", "#AA8262",
+
+            "#FF8C00", "#008C00", "#AA8C00",
+            "#8B3626", "#003626", "#AA3626",
+            "#00BFFF", "#00E8AA", "#AAE8AA",
+            "#EE7621", "#007621", "#AA7621"
+            ];
+
+            $.getJSON('/static/alarm/'+host+a+'room', function(data) {
+
+                temp.data = data;
+                temp.color = colors[x];
+                var chart = new Highcharts.Chart(options_net);
+            });
+            x+=1;
+            options_net.series[x] = {name:'',};
+    	}
+    	$.ajaxSettings.async = true;
+    }
+
+
+
+
+</script>
+{% endblock %}
+

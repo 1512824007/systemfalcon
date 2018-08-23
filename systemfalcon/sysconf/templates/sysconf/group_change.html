@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/forms.css">
+    <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+    <title>监控系统</title>
+</head>
+<body>
+<div class="form-row form-group field-groups">
+    <div class="widget_type__filteredselectmultiple">
+        <div class="related-widget-wrapper">
+            <button id = "change-role" onclick="save_role()" class="btn btn-primary " style="float:right;display: none;">保存角色</button>
+            <script>
+                $(document).ready(function() {
+                    if ({{ is_show|safe }}) {
+                        $("#change-role").show();
+                    }
+                });
+            </script>
+            <div class="selector">
+                <div class="selector-available">
+                    <h2>可用 组</h2>
+                    <!--<p id="id_groups_filter" class="selector-filter">
+                        <label for="id_groups_input">
+                            <span class="help-tooltip search-label-icon" title="在此框中键入以过滤可用的组列表"></span>
+                        </label>
+                        <input type="text" placeholder="过滤" id="id_groups_input">
+                    </p>-->
+                    <select id="id_groups_from" name="groups_old" data-field-name="组" multiple="multiple" class="filtered">
+                        {% for i in group_no %}
+                        <option value="{{ i.0 }}" title="{{ i.1 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <ul class="selector-chooser">
+                    <li>
+                        <a title="选择" onclick="move('id_groups_from','id_groups_to')"  class="selector-add">选择</a>
+                    </li>
+                    <li>
+                        <a title="删除" onclick="move('id_groups_to','id_groups_from')"  class="selector-remove">删除</a>
+                    </li>
+                </ul>
+
+                <div class="selector-chosen" >
+                    <h2>选中的 组</h2>
+                    <select id="id_groups_to" multiple="multiple" size="0" name="groups" class="filtered">
+                        {% for i in group_in %}
+                        <option value="{{ i.0 }}" title="{{ i.1 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        function move(fr,to) {
+            var fromBox = document.getElementById(fr);
+            var toBox = document.getElementById(to);
+            while(fromBox.selectedIndex != -1){
+                toBox.appendChild(fromBox.options[fromBox.selectedIndex]);
+            }
+        }
+
+        function save_role(){
+            var role = document.getElementById("id_groups_to");
+            var options = role.options;
+            var b = new Array();
+            for(var i=0,len=options.length;i<len;i++){
+                var opt = options[i];
+                b[i]=parseInt(opt.value);
+            }
+
+            var user_id = ({{ user }});
+            var username = "{{ username }}";
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/group_save/",
+                data:{
+                    "uId":user_id,
+                    "gId":JSON.stringify(b),
+                    "username":username,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    alert(data);
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                }
+
+            });
+        }
+</script>
+</body>

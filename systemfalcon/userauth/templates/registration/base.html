@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico"/>
+    <link rel="bookmark" href="/static/img/favicon.ico"/>
+    <title>{{ title }} | CDN 机房监控平台</title>
+
+    <!-- Bootstrap -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/static/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="/static/css/animate.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/static/css/custom.min.css" rel="stylesheet">
+  </head>
+
+  <body class="login" style="background-color: #E4E7EA">
+
+    <div >
+      <div class="login_wrapper">
+        <div class="animate form login_form">
+          <section class="login_content">
+	    <form method="post" action="">
+               <h1><i class="fa fa-user fa-lg"></i> 全网CDN机房监控平台</h1>
+            {% csrf_token %}
+              <h1>{{ title }}</h1>
+		{% block content %}
+		{% endblock %}
+    	<!-- footer -->
+              <div class="clearfix"></div>
+              <br />
+	      <div>
+               <!-- <h1><i class="fa fa-paw"></i> 系统部工作台</h1> -->
+                <p>系统部工作平台  2016-{% now "Y" %}.<a href="http://www.gosun.com" target="_blank"></br>吉林高升科技有限公司</a></p>
+              </div>
+    	<!-- footer end -->
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

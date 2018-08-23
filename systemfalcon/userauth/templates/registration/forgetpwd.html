@@ -1,0 +1,15 @@
+{% extends 'registration/base.html' %}
+{% block content %}
+    <form id="jsFindPwdForm" method="post" action="/modify_pwd/" autocomplete="off">
+        <div class="form-group marb20 {% if forget_form.errors.email %}errorput{% endif %}">
+            <label>帐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号(邮箱正确，点击提交会同时发送邮件)</label>
+            <input type="text" id="account" name="email" value="{{ forget_form.email.value }}" placeholder="邮箱" />
+            {% if msg %}
+            {{ msg }}
+            {% endif %}
+        </div>
+        <input class="btn btn-green"  type="submit" value="提交" />
+        <p class="form-p" style="bottom:40px;">您还可以<a href="{% url "login" %}"> [直接登录]</a></p>
+    {% csrf_token %}
+    </form>
+{% endblock %}

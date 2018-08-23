@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+
+    <script src="/static/public/plugin/jquery-1.12.4/jquery.min.js"></script>
+    <script src="/static/public/js/common.js"></script>
+
+    <title>监控系统</title>
+</head>
+<body>
+    <div  class="monitorContainer" style="margin-top:0px">
+        <div class="Content" >
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="dashboardItem" style="min-height: 100px!important;">
+                            <div class="dashboardItemTitle">
+                                <span>用户组管理</span>
+                            </div>
+                            <div class="dashboardItemContent chosenSelect" >
+                                    <label for="" class="col-xs-6 text-left" style="padding-top: 5px;">用户名:</label>
+                                    <button onclick="redirect_who()" class="btn btn-primary" style="float:right;">变更角色</button>
+                                    <select name="user" id="user0"   class="form-control vTextField required">
+                                    {% for i in usr %}
+                                        <option value={{ i.1 }}>{{ i.0}}</option>
+                                    {% endfor %}
+                                    </select>
+                                    <iframe id="user1"  width="100%" height="740" scrolling="no" frameborder="0"
+                                    style="display: none">
+                                    </iframe>
+                                    <script>
+                                    function redirect_who() {
+                                        var idc_search=document.getElementById('user0');
+                                        var index = idc_search.selectedIndex;
+                                        var value = idc_search.options[index].value;
+                                        var text = idc_search.options[index].text;
+
+                                        var obj = document.getElementById('user1');
+                                        obj.src='/monitor/sysconf/group_change/?user='+value+'&username='+text;
+                                        obj.style.display = "block";
+
+                                    }
+                                    </script>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</body>

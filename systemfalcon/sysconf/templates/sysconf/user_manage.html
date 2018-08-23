@@ -1,0 +1,83 @@
+{% extends "view/Base.html" %}
+{% block content %}
+<ul  class="nav nav-tabs">
+                <li role="presentation"><a href="/monitor/Dashboard/">dashboard</a></li>
+                <li role="presentation"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+                <li role="presentation"><a href="/monitor/MonitorManage/">系统配置</a></li>
+                <li role="presentation"><a href="#">资源管理</a></li>
+                <li role="presentation"><a href="#">变更管理</a></li>
+                <li role="presentation" class="active"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+                <li role="presentation"><a href="#">安全检测</a></li>
+                <li role="presentation"><a href="#">FAQ</a></li>
+
+</ul>
+
+<div class="Content">
+    <h4 style="color: #1a78b5;padding: 0 30px;margin: 0;font-size:16px;">用户管理</h4>
+    <div class="row monitorInfoBox" style="position: relative;padding: 15px;">
+        <ul class="list-group pull-right" style="width: 60%;max-width:180px;text-align: center;position: absolute;top:15px;left: 40px;">
+            <li id = "US" class="list-group-item tabActive"><a onclick="show('us')">用户管理</a></li>
+            <li id = "RM" class="list-group-item"><a onclick="show('rm')">板块管理</a></li>
+            <li id = "PM" class="list-group-item"><a onclick="show('pm')">用户组管理</a></li>
+            <li id = "LL" class="list-group-item"><a onclick="show('ll')">用户操作日志</a></li>
+            <li id = "CM" class="list-group-item"><a onclick="show('cm')">模块管理</a></li>
+        </ul>
+        <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+            <iframe id="us" src="{% url 'user_center' %}" width="100%" height="100%"scrolling="no" frameborder="0" style="visibility:visible"></iframe>
+        </div>
+        <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+            <iframe id="rm" src="{% url 'module_add' %}" width="100%" height="100%" scrolling="no" frameborder="0"
+                    style="visibility:hidden;"></iframe>
+        </div>
+        <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+            <iframe id="pm" src="{% url 'group_center' %}" width="100%" height="100%" scrolling="no" frameborder="0"
+                    style="visibility:hidden;"></iframe>
+        </div>
+        <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+            <iframe id="ll" src="{% url 'log_center' %}" width="100%" height="100%" scrolling="no" frameborder="0"
+                    style="visibility:hidden;"></iframe>
+        </div>
+        <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+            <iframe id="cm" src="{% url 'classmod_man' %}" width="100%" height="100%" scrolling="no" frameborder="0"
+                    style="visibility:hidden;"></iframe>
+        </div>
+        <script type="text/javascript" >
+
+            function show(id){
+                if(id == 'rm'){
+                    $("li").removeClass("tabActive");
+                    $("#RM").addClass('tabActive');
+                }
+                else if(id == 'pm'){
+                    $("li").removeClass("tabActive");
+                    $("#PM").addClass('tabActive');
+                }
+                else if(id == 'll'){
+                    $("li").removeClass("tabActive");
+                    $("#LL").addClass('tabActive');
+                }
+                else if(id == 'cm'){
+                    $("li").removeClass("tabActive");
+                    $("#CM").addClass('tabActive');
+                }
+                else{
+                    $("li").removeClass("tabActive");
+                    $("#US").addClass("tabActive");
+                }
+                var divList=document.getElementsByTagName('iframe');
+                for(i=0;i<divList.length;i++){
+                    if(divList[i].id==id){
+                        divList[i].style.display='block';
+                        divList[i].style.visibility='visible';
+                    }
+                    else{
+                        divList[i].style.display='none';
+                        divList[i].style.visibility='hidden';
+                    }
+                }
+            }
+        </script>
+
+    </div>
+</div>
+{% endblock %}

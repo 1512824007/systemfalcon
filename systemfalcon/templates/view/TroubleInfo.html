@@ -1,0 +1,441 @@
+{% extends "view/Base3.html" %}
+{% block content %}
+<ul  class="nav nav-tabs">
+    <li role="presentation"><a href="/monitor/Dashboard/">dashboard</a></li>
+    <li role="presentation" class="active"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+    <li role="presentation"><a href="/monitor/MonitorManage/">系统配置</a></li>
+    <li role="presentation"><a href="#">资源管理</a></li>
+    <li role="presentation"><a href="#">变更管理</a></li>
+    <li role="presentation"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+    <li role="presentation"><a href="#">安全检测</a></li>
+    <li role="presentation"><a href="#">FAQ</a></li>
+</ul>
+	<div class="Content">
+            <h4 style="color: #1a78b5;padding: 0 5px;margin: 0;font-size:16px;">故障详细信息页<a class="backMonitor">返回</a></h4>
+            <div class="row" style="padding: 15px 0;">
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>故障基本信息</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table troubleTable">
+                                {% for alarm in alarm_info %}
+                                <tbody>
+                                    <tr>
+                                        <td>故障类型</td>
+                                        <td>{{ alarm.cluster }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>故障部位</td>
+                                        <td>{{ alarm.metric }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>发生时间</td>
+                                        <td>{% load tz %}{% localtime off %}{{ alarm.start_date }}{% endlocaltime %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>故障对象</td>
+                                        <td>{{ alarm.hostname }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>告警详情</td>
+                                        <td>{{ alarm.aralm }}</td>
+                                    </tr>
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>故障处理日志</span>
+			    <a type="button" class="pull-right rmr15" data-toggle="modal" data-target="#myModal">编辑日志</a>
+                        </div>
+                        <div class="dashboardItemContent" style="padding: 10px 10px 0 10px;">
+			 <pre style="height: 248px;overflow: auto;padding-bottom:0;margin-bottom:0;">{% for op in alarm_op %}{{ op.alarm_operation }}{% endfor %}</pre>
+
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">操作记录</h4>
+                                        </div>
+                                        <form method="POST" id="formadd">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                        {% for alarm in alarm_info %}
+                                            <input id="alarm_host_id" value="{{ alarm.pk }}" hidden="hidden" >
+                                            <input id="alarm_host" value="{{ alarm.hostname }}" hidden="hidden">
+                                            <input id="alarm" value="{{ alarm.aralm }}" hidden="hidden">
+                                        {% endfor %}
+
+                                            <textarea style="height: 300px;width: 550px;" id="alarm_operation" placeholder="请输入操作记录" data-bv-notempty>{% for op in alarm_op %}{{ op.alarm_operation }}{% endfor %}</textarea>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                            <button type="submit" class="btn btn-primary" id="submit">保存</button>
+                                        </div>
+                                        </form>
+                                        <script>
+                                            $(document).ready(function(){
+                                                $.ajaxSetup({
+                                                     data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+                                                });
+                                            $('#formadd').submit(function(){
+                                                    var host_id = $("#alarm_host_id").val();                 //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                                                    var name = $("#alarm_host").val();                 //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                                                    var alarm = $("#alarm").val();    //同上
+                                                    var alarm_operation = $("#alarm_operation").val();    //同上
+
+                                                    $.ajax({
+                                                        type:"POST",
+                                                        data: {host_id:host_id,name:name, alarm:alarm,alarm_operation:alarm_operation},
+                                                        url: "{% url 'TroubleInfo_Add' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                                                        cache: false,
+                                                        dataType: "html",
+                                                        success: function(result, statues, xml){
+                                                            alert(result);  //成功时弹出view传回来的结果
+                                                            window.location.reload();
+                                                        },
+                                                        error: function(){
+                                                            alert("false");
+                                                        }
+                                                    });
+                                                    return false;
+                                                });
+
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>设备信息</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table troubleTable">
+                                {% for alarm in alarm_info %}
+                                <tbody>
+                                    <tr>
+                                        <td>设备名</td>
+                                        <td>{{ alarm.hostname }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>IP地址</td>
+                                        <td>{{ alarm.ip }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>所在机房</td>
+                                        <td>{{ alarm.room }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>所属产品</td>
+                                        <td>{{ cluster }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>服务角色</td>
+                                        <td>{{ project }}</td>
+                                    </tr>
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>设备配置信息</span>
+                        </div>
+                        <div class="dashboardItemContent" style="height: 245px;">
+                           <div class="row" style="height: 90%;margin: 10px 0;">
+                               <div class="col-xs-3 text-center" style="padding:30px;" >硬件配置</div>
+                               <div class="col-xs-3 text-left" style="padding:30px 0;border-right:1px solid #f1f1f1;height:100%">
+                                   <p>厂 家：{{ manufacturer }}</p>
+                                   <p>型 号：{{ product_name }}</p>
+                                   <p>序列号：{{ sn }}</p>
+                               </div>
+                               <div class="col-xs-3 text-center" style="padding:30px">软件配置</div>
+                               <div class="col-xs-3 text-left" style="padding:30px 0">
+                                   <p>系统：{{ os }}</p>
+                                   <p>内存：{{ memory_size|filesizeformat }}</p>
+                               </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>设备网络状态</span>
+                        </div>
+                        <div class="dashboardItemContent" style="position: relative;">
+                            <div class="row" style="padding:20px">
+                                <div class="col-xs-6">
+                                    <a href="" class="btn btn-primary activeBtn">延时</a>
+                                    <a href="" class="btn">丢包率</a>
+                                    <a href="" class="btn">抖动率</a>
+                                    <a href="" class="btn">传输速度</a>
+                                </div>
+                            </div>
+                            <p class="text-center rmt20" style="height: 203px;line-height: 160px;">可用eCharts图表插件实现</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>设备服务端口状态</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table troubleTable text-center">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="background: #fff;padding:15px 20px;font-weight: 500;">服务端口</th>
+                                        <th class="text-center" style="background: #fff;padding:15px 20px;font-weight: 500;">状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+				{% for value in result %}
+                                <tr>
+                                    <td> {{ value.ports }}</td>
+                                    {% if value.values == '1.0' %}
+                                    <td> {{ value.values|floatformat }}</td>
+                                    {% else  %}
+                                    <td style="color:#ff1d0e;font-weight: bold;">端口不通</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>设备服务端口状态</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table troubleTable">
+                               <thead>
+                                <th class="text-center" style="background: #fff;padding:15px 20px;font-weight: 500;">业务</th>
+                                <th class="text-center" style="background: #fff;padding:15px 20px;font-weight: 500;">服务端口</th>
+                                <th class="text-center" style="background: #fff;padding:15px 20px;font-weight: 500;">状态</th>
+                            </thead>
+
+                                <tbody>
+                                {% for value in result %}
+                                <tr>
+                                    <td>直播</td>
+                                    <td> {{ value.ports }}</td>
+                                    {% if value.values == '1.0' %}
+                                    <td> {{ value.values|floatformat }}</td>
+                                    {% else  %}
+                                    <td style="color:#ff1d0e;font-weight: bold;">端口不通</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                                </tbody> 
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>设备网络状态</span>
+                        </div>
+                        <div class="dashboardItemContent" style="position: relative;">
+			    <div class="row" style="padding:20px">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-default activeBtn" onclick="show('load')">负载</a>
+                                    <a class="btn btn-default" onclick="show('cpu')">CPU</a>
+                                    <a class="btn btn-default" onclick="show('mem')">内存</a>
+                                    <a class="btn btn-default" onclick="show('net')">流量</a>
+                                    <a class="btn btn-default" onclick="show('error')">网卡error</a>
+                                    <a class="btn btn-default" onclick="show('estab')">HTTP服务请求数</a>
+                                </div>
+                            </div>
+                             <div class="dashboardItemContent">
+	     			        <div style="height: auto;width: auto;">
+                                    <iframe id="load" src="/monitor/hcgraph/index/chart/alarm_load/{{ hostname }}"  width="100%" height="530px" scrolling="no" frameborder="0" > </iframe>
+                            </div>
+                             <div style="height: auto;width: auto;">
+                                    <iframe id="cpu" src="/monitor/hcgraph/index/chart/alarm_cpu/{{ hostname }}"  width="100%" height="530px" scrolling="no" frameborder="0" style="display: none"> </iframe>
+                            </div>
+                             <div style="height: auto;width: auto;">
+                                    <iframe id="mem" src="/monitor/hcgraph/index/chart/alarm_memory/{{ hostname }}"  width="100%" height="530px" scrolling="no" frameborder="0" style="display: none"> </iframe>
+                            </div>
+                             <div style="height: auto;width: auto;">
+                                    <iframe id="net" src="/monitor/hcgraph/index/chart/alarm_network/{{ hostname }}"  width="100%" height="530px" scrolling="no" frameborder="0" style="display: none"> </iframe>
+                            </div>
+                             <div style="height: auto;width: auto;">
+                                    <iframe id="error" src="/monitor/hcgraph/index/chart/alarm_network_error/{{ hostname }}"  width="100%" height="530px" scrolling="no" frameborder="0" style="display: none"> </iframe>
+                            </div>
+                             <div style="height: auto;width: auto;">
+                                    <iframe id="estab" src="/monitor/hcgraph/index/chart/alarm_http/{{ hostname }}"  width="100%" height="530px" scrolling="no" frameborder="0" style="display: none"> </iframe>
+                            </div>
+
+                                  <script type="text/javascript" >
+                                    function show(id){
+                                    var showDiv=document.getElementById(id);
+                                    var divList=document.getElementsByTagName('iframe');
+                                    //alert(divList.length);
+                                    for(i=0;i<divList.length;i++){
+                                    if(divList[i].id==id){
+                                    divList[i].style.display='block';
+                                    }
+                                    else{
+                                    divList[i].style.display='none';
+                                    }
+                                    }
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>相同机架设备状态</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table table-hover">
+                                <thead>
+                                    <th>机架号</th>
+                                    <th>主机名</th>
+                                    <th>产品</th>
+                                    <th>服务角色</th>
+                                    <th>当前状态</th>
+                                </thead>
+                                <tbody>
+				    {% for rack in racks %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ rack.0 }}</td>
+                                        <td>{{ rack.1 }}</td>
+                                        <td>{{ rack.2 }}</td>
+					{% if rack.0 in  host_name %}
+                                            <td style="color:#ff1d0e;font-weight: bold;">故障</td>
+                                        {% elif rack.0 not in  host_name %}
+                                            <td>服务</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>相同网段设备状态</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table table-hover">
+                                <thead>
+                                <th>机架号</th>
+                                <th>主机名</th>
+                                <th>产品</th>
+                                <th>服务角色</th>
+                                <th>当前状态</th>
+                                </thead>
+                                <tbody>
+				 {% for netline in netlines %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ netline.0 }}</td>
+                                    <td>{{ netline.1 }}</td>
+                                    <td>{{ netline.2 }}</td>
+				    {% if netline.0  in  host_name %}
+                                            <td style="color:#ff1d0e;font-weight: bold;">故障</td>
+                                        {% elif rack.0 not in  host_name %}
+                                            <td>服务</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>相同服务角色设备状态</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table table-hover">
+                                <thead>
+                                <th>机架号</th>
+                                <th>主机名</th>
+                                <th>产品</th>
+                                <th>服务角色</th>
+                                <th>当前状态</th>
+                                </thead>
+                                <tbody>
+				  {% for cluster in clusters %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ cluster.0 }}</td>
+                                    <td>{{ cluster.1 }}</td>
+                                    <td>{{ cluster.2 }}</td>
+				    {% if cluster.0  in  host_name %}
+                                            <td style="color:#ff1d0e;font-weight: bold;">故障</td>
+                                        {% elif rack.0 not in  host_name %}
+                                            <td>服务</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>到服务器拓扑机房 (XXX) 的网络状态</span>
+                        </div>
+                        <div class="dashboardItemContent" style="position: relative;">
+                            <div class="row" style="padding:20px">
+                                <div class="col-xs-6">
+                                    <a href="" class="btn btn-primary activeBtn">延时</a>
+                                    <a href="" class="btn">丢包率</a>
+                                    <a href="" class="btn">抖动率</a>
+                                    <a href="" class="btn">传输速度</a>
+                                </div>
+                            </div>
+                            <p class="text-center rmt20" style="height: 203px;line-height: 160px;">可用eCharts图表插件实现</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+	</div>
+{% endblock %}

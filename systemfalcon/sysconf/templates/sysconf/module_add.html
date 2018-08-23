@@ -1,0 +1,153 @@
+{% extends "sysconf/Base5.html" %}
+{% block content %}
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="dashboardItemTitle">
+                            <span>版块增</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th><label class="required" for="module_name">功能版块名：</label></th>
+                                    <th>
+                                        <input name="module_name" id="module_name" >
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><label class="required" for="remarks">备注：</label></th>
+                                    <th>
+                                        <input  name ="remarks" id="remarks" style="width: 200px; height: 40px">
+                                    </th>
+                                </tr>
+                            </table>
+
+                            <div >
+                                <button id="add_module" class="btn btn-primary active" name="_save">
+                                    <span class="text">保存</span>
+                                </button>
+                                <button class="btn btn-primary active" >
+                                    <span class="text">取消</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="dashboardItemTitle" >
+                            <span>版块删改</span>
+                        </div>
+                        <div class="dashboardItemContent" >
+                            <div>
+                                <label for="" class="col-xs-6 text-left">版块:</label>
+                                <select name="module" id="module"   class="form-control vTextField required">
+                                {% for i in mod %}
+                                    <option value={{ i.module_name }}>{{ i.module_name}}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <button id="del_mod" class="btn btn-primary active" >删除该版块</button>
+                                <button id="change_mod" class="btn btn-primary active" >更改版块名</button>
+                            </div>
+                            <div id="c_mod" style="visibility:hidden;padding-top: 20px;">
+                                <label class="col-xs-6 text-left" >新的版块名称:</label>
+                                <input name="name" id="new_mod_name"  class="form-control" maxlength="80">
+                                <button id="change-mname" class="btn btn-primary active" >
+                                    <span class="text">保存版块名</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+                </div>
+            </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        //if ({{ is_show|safe }}) {
+            //$("#add_module").show();
+        //}
+        $("#del_mod").click(function () {
+            var mod=document.getElementById("module");
+            var index = mod.selectedIndex;
+            var module_name = mod.options[index].value;
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/module_del/",
+                data:{
+                    "module_name":module_name,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    alert(data);
+                    location.reload();
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                }
+            });
+        });
+
+        $("#add_module").click(function () {
+            var module_name = document.getElementById("module_name").value;
+            var remarks = document.getElementById("remarks").value;
+
+            $.ajax({
+                type: "post",
+                url: "/monitor/sysconf/module_add/",
+                data: {
+                    "module_name": module_name,
+                    "remarks": JSON.stringify(remarks),
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+
+                success: function (data) {
+                    alert(data);
+                    location.reload();
+                },
+                error: function (data) {
+                    alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                }
+            });
+        });
+
+        $("#change_mod").click(function () {
+            var mod=document.getElementById("module");
+            var index = mod.selectedIndex;
+            var module_name = mod.options[index].value;
+            document.getElementById("c_mod").style.visibility='visible';
+            $("#new_mod_name").val(module_name);
+        });
+        
+        $("#change-mname").click(function () {
+            var mod=document.getElementById("module");
+            var index = mod.selectedIndex;
+            var module_name = mod.options[index].value;
+            var new_name = $("#new_mod_name").val();
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/module_change/",
+                data:{
+                    "module_name":module_name,
+                    "new_name":new_name,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    alert(data);
+                    location.reload();
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                }
+            });
+        })
+    });
+
+
+
+</script>
+
+{% endblock %}

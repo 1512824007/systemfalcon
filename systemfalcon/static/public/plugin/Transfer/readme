@@ -1,0 +1,20 @@
+transfer 是我手写的插件，可能会有点小问题，希望可以共同维护。
+
+transfer 是基于jquery编写的，所以需要依赖jquery。
+
+transfer 初始化方法:
+
+$(dom).transfer(options);
+
+dom:必须是ID，即$(#dom);
+
+options:Json对象
+
+options={
+    search:'all',//是否需要搜索框，参数为，'left,right,all'
+    data:{ //data格式为left:[],right:[]。id和value组成的对象数组
+           left:[{id:1,value:1},{id:2,value:2},{id:3,value:3},{id:4,value:4},{id:5,value:5}],
+           right:[{id:6,value:'ipipipip'},{id:7,value:'asdf'}]
+         },
+    title:['全部用户组','所属用户组']//标题
+}

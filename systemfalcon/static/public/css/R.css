@@ -1,0 +1,471 @@
+body{
+    margin:0;
+    padding:0;
+    font-family: "Microsoft YaHei UI";
+    background: #F6F8FA;
+}
+input{
+    outline: none;
+    border-radius: 4px;
+    border:1px solid #aaa;
+}
+a{
+    cursor: pointer;
+}
+.rmt20{
+    margin-top:20px!important;
+}
+.rmt30{
+    margin-top:30px!important;
+}
+.rmt15{
+    margin-top:15px!important;
+}
+.rmr15{
+    margin-right:15px!important;
+}
+.rmr10{
+    margin-right:10px;
+}
+.rmt60{
+    margin-top:60px!important;
+}
+.rml10{
+    margin-left:10px!important;
+}
+.rml40{
+    margin-left:40px!important;
+}
+.rmb30{
+    margin-bottom:30px!important;
+}
+.rp20{
+    padding:20px!important;
+}
+.rpl10{
+    padding-left:10px!important;
+}
+.red{
+    color: #F25F5F;
+}
+.blue{
+    color: #4D99C9;
+}
+.backTop{
+    border:1px solid #fff;
+    background: #1a78b5;
+    padding:10px 16px;
+    font-size:18px;
+    color: #fff;
+    position:fixed;
+    top:90%;
+    left:95%;
+    z-index: 1000;
+    display: none;
+}
+.backTop:hover{
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+}
+.monitorBox>.topbar{
+    background:#1a78b5!important;
+    border:0!important;
+}
+.monitorBox .topbar .navbar-header{
+    width: 100%;
+}
+.monitorBox .topbar .navbar-header a{
+    color: #fff!important;
+}
+.monitorBox .topbar .navbar-header .glyphicon{
+    top:2px;
+}
+.monitorBox .topbar .logoBox{
+    background: url("../../public/image/logo.png") 13px 6px no-repeat;
+    padding-left:150px;
+}
+.monitorContainer{
+    margin-top:60px;
+}
+.monitorContainer>.nav-tabs{
+    padding-left:30px;
+    border-bottom:4px solid #1a78b5;
+}
+.monitorContainer>.nav-tabs a{
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    padding:12px 20px;
+}
+.monitorContainer>.nav-tabs>.active>a{
+    background: #1a78b5;
+    color: #fff;
+    cursor: pointer;
+    border:1px transparent solid;
+}
+.monitorContainer>.nav-tabs>.active>a:hover,.monitorContainer>.nav-tabs>.active>a:focus{
+    background: #1a78b5;
+    color: #fff;
+    cursor: pointer;
+    border:1px transparent solid;
+}
+.monitorContainer>.nav-tabs>li{
+    margin-right:20px;
+}
+.monitorContainer>.nav-tabs>li>a{
+    color: #333;
+}
+.monitorContainer>.nav-tabs>li>a:hover,.monitorContainer>.nav-tabs>li>a:focus{
+    color: #333;
+    background: transparent;
+    border:1px transparent solid;
+}
+.monitorContainer>.Content{
+    padding:20px;
+}
+.monitorContainer>.Content>.row .dashboardItem{
+    padding:10px 0;
+    border:1px solid #f1f1f1;
+    background-color: #fff;
+}
+.monitorContainer>.Content>.row .dashboardItem .table{
+    margin-bottom:0;
+    border-bottom:1px solid #DDD;
+}
+.monitorContainer>.Content>.row .dashboardItem .table th{
+    border-bottom:1px solid #ddd;
+    background: #F7F7F7;
+}
+.monitorContainer>.Content>.row .dashboardItem>.dashboardItemTitle{
+    border-bottom:1px solid #f1f1f1;
+    height:32px;
+}
+.monitorContainer>.Content>.row .dashboardItem>.dashboardItemTitle>span{
+    border-bottom:3px solid #1a78b5;
+    padding:10px 20px;
+    color:#1a78b5;
+    font-size:15px;
+    font-weight:600;
+}
+.monitorContainer>.Content>.row .dashboardItem .btn{
+    -webkit-border-radius:15px;
+    -moz-border-radius:15px;
+    border-radius:15px;
+    padding:5px 15px;
+    border:1px solid #ddd;
+    color: #333;
+    margin-right:15px;
+}
+.monitorContainer>.Content>.row .dashboardItem .activeBtn{
+    background: #1177B7;
+    border:1px solid #1177B7;
+    color: #fff;
+}
+.dashboardSpecialContent td,.dashboardSpecialContent th{
+    text-align: center;
+}
+.monitorInfoBox .list-group{
+    border: none!important;
+    box-shadow: none;
+    z-index: 1000;
+}
+.monitorInfoBox .list-group li{
+    margin-bottom:10px;
+    height:40px;
+    line-height:30px;
+    border:0;
+    background: #d4d4d4;
+    padding:0;
+}
+.monitorInfoBox .list-group li a{
+    display: block;
+    height:40px;
+    width:100%;
+    line-height: 40px;
+    color: #333;
+}
+.monitorInfoBox .list-group li a:hover,.monitorInfoBox .list-group li a:focus{
+    text-decoration: none;
+}
+.monitorInfoBox .dashboardItem{
+    border: none!important;
+    min-height:200px!important;
+}
+.monitorInfoBox .dashboardItem .btn{
+    -webkit-border-radius:5px!important;
+    -moz-border-radius:5px!important;;
+    border-radius:5px!important;
+}
+.monitorInfoBox .dashboardItem .btn-primary{
+    color: #fff!important;
+    background: #1a78b5!important;
+}
+.chosenSelect .chosen-container{
+    float: left;
+}
+.chosenSelect .chosen-single{
+    height: 30px!important;
+    line-height: 26px!important;
+    background: #fff;
+    background-image: none!important;
+    text-align: left;
+}
+.chosenSelect .chosen-drop{
+    text-align: left;
+}
+.chosenSelect .chosen-single b{
+    margin-top:3px!important;
+}
+/*.chosenSelect .chosen-container-multi{
+    width:100%!important;
+}*/
+.chosenSelect .chosen-container-multi .chosen-choices{
+    padding:5px;
+}
+.chosenSelect .chosen-container-multi li{
+    height:24px!important;
+}
+.chosenSelect .chosen-container-multi li>span{
+    line-height: 17px;
+}
+.chosenSelect .chosen-container-multi li>a{
+    top:6px!important;
+}
+.troubleTable{
+    border-bottom: 0 !important;
+}
+.troubleTable td{
+    padding:15px 20px!important;
+    width:40%;
+}
+.deviceList td{
+    line-height:40px!important;
+}
+.deviceTable td{
+    padding:15px!important;
+}
+.tabActive a{
+    background: #FFF;
+    color:#1a78b5!important;
+    border-left:1px solid #f1f1f1;
+    border-top:1px solid #f1f1f1;
+    border-bottom:1px solid #f1f1f1;
+    cursor: auto;
+}
+.moreSearch{
+    cursor: pointer;
+}
+.moreSearch i{
+    color: #333;
+}
+.TroubleTab a{
+    cursor: pointer;
+}
+.backMonitor,.backUrlClick{
+    border-left: 1px solid #ddd;
+    padding-left: 15px;
+    margin-left: 15px;
+}
+.bg{
+    background: url('../image/bg.png') no-repeat center top;
+    padding-top:10%;
+}
+.SignBox{
+    width:500px;
+    height:300px;
+    margin:0px auto;
+}
+.SignBox>img{
+    margin:20px auto;
+    display: block;
+}
+.signUpBox,.signinBox{
+    width:440px;
+    margin:20px auto;
+    background: #fff;
+    -webkit-border-radius:15px;
+    -moz-border-radius:15px;
+    border-radius:15px;
+    opacity:0.8;
+    padding:20px 50px;
+    box-shadow: #333 0px 9px 20px 0px;;
+}
+.SignBox h3{
+    color: #B7883E;
+    font-size:22px;
+    font-weight:800;
+}
+.signinBox input[type='text'],.signinBox input[type='password']{
+    padding-left:30px;
+    height: 40px;
+    line-height: 40px;
+}
+.signinBox .glyphicon {
+    float: left;
+    top:28px;
+    left: 10px;
+}
+.signinBox .btn{
+    padding:5px 20px;
+}
+
+.signUpBox input[type='text'],.signUpBox input[type='password']{
+    padding-left:30px;
+    height: 40px;
+    line-height: 40px;
+}
+.signUpBox .glyphicon {
+    float: left;
+    top:28px;
+    left: 10px;
+}
+.signUpBox .btn{
+    padding:5px 20px;
+}
+
+
+.SignBox .guide{
+    height:20px;
+    padding:5px 35px;
+}
+.SignBox .guide>div>p{
+    float: left;
+    padding:3px;
+    background-color:rgba(255, 255, 255, 0.4);
+    color: #FFF;
+}
+.SignBox .guide .active>p{
+    background: #FFF;
+    opacity:1;
+    color: #333;
+}
+.SignBox .guide  .Right{
+    border: 13px solid transparent;
+    border-left-color: #f0f0f0;
+    opacity:0.4!important;
+    background: transparent!important;
+    width: 0;
+    padding:0!important;
+}
+.SignBox .guide .leftP{
+    margin-right:-25px;
+    border-left-color: transparent;
+}
+.SignBox .guide .active .Right{
+    border: 13px solid transparent;
+    border-left-color: #fff;
+    opacity:1!important;
+    height: 0;
+}
+.SignBox .vertifyCode{
+    position: absolute;
+    left: 210px;
+    top: 0px;
+    height: 40px;
+    padding-left: 10px;
+    width: 130px;
+    font-weight:500;
+}
+.SignBox .chosen-container{
+    float: inherit;
+    width: 100% !important;
+    height:40px!important;
+}
+.SignBox .chosen-container .chosen-single{
+    height:40px!important;
+    line-height: 40px!important;
+}
+.UserManageBox .chosenSelect .chosen-container{
+    width:50%!important;
+}
+.tableTitleBox .chosen-container{
+    width:60px!important;
+    margin-bottom:4px;
+}
+.tableTitleBox .chosen-single{
+    background: #fff;
+}
+.tableTitleBox .tableTitle{
+    padding:10px 30px;
+    font-size:16px;
+    color: #2777B7;
+    border-bottom:#2777B7 3px solid ;
+}
+.tableTitleBox .tableInfoTitle{
+    padding:5px 20px;
+    font-size:16px;
+    color: #2777B7;
+    border-left:#2777B7 3px solid ;
+}
+.modal .modal-header{
+    background: #edf2f5;
+}
+.modal .modal-body{
+    padding:30px;
+}
+.modal .form-group{
+    min-height:30px;
+    margin-bottom:30px;
+}
+.modal .form-group input{
+    -webkit-border-radius:0;
+    -moz-border-radius:0;
+    border-radius:0;
+}
+.modal .form-group label{
+    float: right;
+    font-weight:500;
+    line-height:34px;
+}
+.modal .form-group span{
+    font-weight:500;
+    line-height:34px;
+}
+.modal .modal-content{
+    -webkit-border-radius:0;
+    -moz-border-radius:0;
+    border-radius:0;
+}
+.modal .chosenSelect .chosen-container{
+    width:100%!important;
+}
+.modal .chosenSelect .chosen-single{
+    height:34px!important;
+    line-height: 30px!important;
+}
+.modal .modal-content .btn{
+    padding:5px 20px;
+}
+.AlarmSendConfig>.tabBox{
+    border:1px solid #aaaaaa;
+    padding:20px;
+    margin-bottom:30px;
+}
+.AlarmSendConfig .nav-tabs{
+    float: left;
+    width:30%;
+    height:240px;
+    overflow-y: auto;
+}
+.AlarmSendConfig .nav-tabs>li{
+    float: none;
+}
+.AlarmSendConfig .nav-tabs>li>a{
+    border-radius:0;
+    border: 1px solid #ddd!important;
+    color: #333;
+    background: #ebe7e7;
+}
+.AlarmSendConfig .tab-content{
+    float: left;
+    width: 70%;
+}
+.AlarmSendConfig .form-group{
+    margin-bottom:20px;
+}
+.AlarmSendConfig .active>a{
+    background: #c5c2c2!important;
+}
+.AlarmSendConfig .col-xs-4{
+    padding:0;
+}

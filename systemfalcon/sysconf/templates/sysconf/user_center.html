@@ -1,0 +1,59 @@
+{% extends "sysconf/Base5.html" %}
+{% block content %}
+<!--<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+
+    <script src="/static/public/plugin/jquery-1.12.4/jquery.min.js"></script>
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+
+    <title>监控系统</title>
+</head>
+<body>
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+-->
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="dashboardItem" style="min-height: 100px!important;">
+                    <div class="row">
+                        <div class="col-xs-3 rmt30 text-center">
+                            <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">用户ID:</label>
+                            <input id="account_id" class="input-sm  col-xs-6" placeholder="输入关键字" >
+                        </div>
+                        <div class="col-xs-3 rmt30 text-center">
+                            <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">用户账户:</label>
+                            <input id="account" class="input-sm  col-xs-6" placeholder="输入关键字" >
+                        </div>
+                        <div class="col-xs-3 rmt30 text-center">
+                            <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">用户邮箱:</label>
+                            <input id="email" class="input-sm  col-xs-6" placeholder="输入关键字" >
+                        </div>
+                        <div class="col-xs-3 rmt30 text-right">
+                            <a id="show_log" class="btn btn-primary">查询</a>
+                            <a class="btn">重置</a>
+                        </div>
+                    </div>
+                </div>
+                <iframe id="if0" src="{% url 'user_show' %}" height="100%" scrolling="no" frameborder="0" width="100%"></iframe>
+            </div>
+        </div>
+
+<script>
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii',autoclose: true});
+    $(document).ready(function(){
+        $("#show_log").click(function() {
+            var account = $("#account").val();
+            var account_id = $("#account_id").val();
+            var email = $("#email").val();
+
+            $("#if0").attr('src','/monitor/sysconf/user_show/?account='+account+'&email='+email+'&account_id='+account_id);
+        });
+    });
+</script>
+{% endblock %}

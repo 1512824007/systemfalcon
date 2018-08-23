@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+
+    <title>监控系统</title>
+</head>
+<body onload="IFrameResize()">
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="dashboardItemTitle">
+                            <span style="float:left;margin-top: -10px">模块列表</span>
+                            <p style="float:left;margin-left: 60px;margin-top: 10px">共 {{ class_mod|length }} 个记录</p>
+                            <p style="float:left;margin-left: 60px;margin-top: 10px">
+                                每页显示
+                                    <select id = "select1" >
+                                        <option value={{ height }}>{{ height }}</option>
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                    </select>
+                                个
+                            </p>
+                            <!--<a id="export" class="btn btn-primary active" style="float:right">导出记录</a>-->
+                        </div>
+                        <div class="dashboardItemContent" >
+                            <table id="log_obj" class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th nowrap width="160px">模块名称</th>
+                                    <th nowrap width="160px">参数</th>
+                                    <th nowrap width="160px">返回结果</th>
+                                    <th nowrap width="160px">调用方式</th>
+                                    <th nowrap width="160px">备注</th>
+                                    <th nowrap width="160px">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in contacts %}
+                                    <tr>
+                                        <td>{{ i.class_mod }}</td>
+                                        <td>{{ i.parameter }}</td>
+                                        <td>{{ i.result }}</td>
+                                        <td>{{ i.api }}</td>
+                                        <td>{{ i.remarks }}</td>
+                                        <td><a id="u3">  删除</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        <ul class="pagination">
+                            <li>
+                                {% if contacts.has_previous %}
+                                    <a href="?page={{ contacts.previous_page_number }}&height={{ height }}">&laquo;</a>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <span class="current">
+                                    Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+                                </span>
+                            </li>
+                            <li>
+                                {% if contacts.has_next %}
+                                    <a href="?page={{ contacts.next_page_number }}&height={{ height }}">&raquo;</a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<div class="modal fade deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <h3 style="margin:50px;text-align: center;font-size:18px;font-weight:500">是否确认删除用户以及相应配置？</h3>
+            </div>
+            <div class="text-center dashboardItem" style="padding-bottom: 30px;">
+                <button id="confirm" type="button" class="btn  btn-primary " >确定</button>
+                <button type="button" style="margin-left: 15px;" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/public/plugin/jquery-1.12.4/jquery.js"></script>
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/plugin/Transfer/transfer.js"></script>
+<script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/public/js/R.js"></script>
+<script>
+    function IFrameResize(){
+        var obj = parent.document.getElementById("if0"); //取得父页面IFrame对象
+        obj.height = this.document.body.scrollHeight; //调整父页面中IFrame的高度为此页面的高度
+        var obj2 = parent.parent.document.getElementById("cm"); //取得父页面IFrame对象
+        obj2.height = this.document.body.scrollHeight+400; //调整父页面中IFrame的高度为此页面的高度
+    }
+    $(document).ready(function() {
+        $("#select1").change(function () {
+            var height = $(this).val();
+            var obj_li = $("li a");
+            var page = {{ contacts.number }};
+            for(var i = 0;i<obj_li.length;i++){
+                obj_li[i].href = obj_li[i].href+"&height="+height;
+            }
+
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/classmod_list/",
+                data:{
+                    "height":height,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    window.location = '/monitor/sysconf/classmod_list/?page='+page+'&height='+height;
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯异常...");
+                }
+            });
+        });
+        $("td #u3").click(function() {
+            var obj = $(this).parent().parent();
+            var name = obj.children()[0].innerHTML;
+            $('.deleteModal').modal('show');
+            $("#confirm").click(function () {
+                $.ajax({
+                    type:"post",
+                    url:"/monitor/sysconf/class_mod_del/",
+                    data:{
+                        "classmod":name,
+                        'csrfmiddlewaretoken': $('#csrf_token').val()
+                    },
+                    success:function(data) {
+                        alert(data);
+                        location.reload();
+                    },
+                    error:function(data) {
+                        alert("删除模块,无法提交数据变更,通讯异常...");
+                    }
+                });
+            })
+
+        });
+
+    });
+</script>
+</html>

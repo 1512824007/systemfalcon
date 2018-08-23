@@ -1,0 +1,13 @@
+include LICENSE
+include README.rst
+include __init__.py
+include manage.py
+include openfalcon_wsgi.py
+recursive-include */templates *
+recursive-include templates *
+recursive-include static *
+prune */migrations/
+prune static/top10/
+prune static/alarm/
+prune static/sysconf/
+prune systemfalcon.egg-info/

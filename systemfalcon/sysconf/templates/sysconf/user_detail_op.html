@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/public/css/R.css">
+
+    <title>监控系统</title>
+</head>
+<body>
+    <div  class="monitorContainer" style="margin-top:0px">
+        <div class="Content" >
+
+
+            <h4 style="color: #1a78b5;margin: 20px;font-weight: 500;font-size: 16px;">
+                用户详情 | <a id = "return_user_show">返回</a>
+            </h4>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="tableTitleBox" style="margin: 10px;">
+                            <span class="tableInfoTitle">基本信息</span>
+                        </div>
+                        <div id ="panel1" class="dashboardItemContent">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th width="60px">
+                                    <th>用户ID：</th><th>{{ usr.id }}</th>
+                                    </th>
+                                    <th width="60px">
+                                    <th>用户名：</th><th>{{ profile.realName }}</th>
+                                    </th>
+                                    <th width="60px">
+                                        <th>所属用户组：</th>
+                                    {% for i in group %}
+                                        <th>{{ i.name }}</th>
+                                    {% endfor %}
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th width="60px">
+                                    <th>用户账号：</th><th>{{ usr.username }}</th>
+                                    </th>
+                                    <th width="60px">
+                                    <th>所属部门：</th>
+
+                                    </th>
+                                    <th width="60px">
+                                    <th>状态：</th><th>{{ usr.is_active }}</th>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th width="60px">
+                                    <th>用户邮箱：</th><th>{{ usr.email }}</th>
+                                    </th>
+                                    <th width="60px">
+                                    <th>角色：</th>
+                                    {% if profile.is_director %}
+                                        <th>主管</th>
+                                    {% else %}
+                                        <th>组员</th>
+                                    {%  endif %}
+                                    </th>
+                                    <th width="60px">
+                                    <th>创建时间：</th><th>{{ usr.date_joined }}</th>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-12">
+                    <div class="dashboardItem">
+                        <div class="tableTitleBox" style="margin: 10px;">
+                            <span class="tableInfoTitle">权限信息</span>
+                        </div>
+
+                        <div class="dashboardItemContent">
+                            <table>
+                                <tr>
+                                    <th width="60px">
+                                    <th>可使用系统功能：  </th>
+                                    {% for i in module %}
+                                        <th>{{ i }}</th>
+                                    {% endfor %}
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-12">
+                    <div class="dashboardItem">
+                        <div class="tableTitleBox" style="margin: 10px;">
+                            <span class="tableInfoTitle">操作日志</span>
+                        </div>
+                        <iframe id="if0" src="/monitor/sysconf/log_list/?account={{ username }}" onload="iframeLoad('if0')" scrolling="no" frameborder="0" width="100%"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/static/public/plugin/jquery-1.12.4/jquery.js"></script>
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/plugin/Transfer/transfer.js"></script>
+<script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/public/js/R.js"></script>
+<script>
+    function iframeLoad(id)
+    {
+        document.getElementById(id).height=0;
+        document.getElementById(id).height=document.getElementById(id).contentWindow.document.body.scrollHeight;
+    }
+    $("#return_user_show").click(function () {
+        window.location = "/monitor/sysconf/user_center/";
+    })
+</script>

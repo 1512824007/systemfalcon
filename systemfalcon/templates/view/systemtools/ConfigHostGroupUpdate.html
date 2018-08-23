@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <link rel="stylesheet" href="/static/public/plugin/Transfer/transfer.css">
+    <script src="/static/public/plugin/jquery-1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="/static/public/js/R.js"></script>
+    <script src="/static/public/plugin/Transfer/transfer.js"></script>
+    <title>监控系统</title>
+</head>
+<body>
+
+        <div class="modal-body">
+            {% include 'view/systemconfig/message.html' %}
+            <div class="form-group" style="min-height: 30px;    margin-bottom: 30px;">
+                <div class="col-xs-3 text-right">
+                    <label for="">监控设备组名称:</label>
+                </div>
+                <div class="col-xs-9"><input id="groupname" name="groupname" placeholder="请输入设备组名称" value="{{ host_group }}" class="form-control"></div>
+            </div>
+            <div class="form-group" style="min-height: 30px;    margin-bottom: 30px;">
+                <div class="col-xs-3 text-right">
+                    <label  for="">说明:</label>
+                </div>
+                <div class="col-xs-9"><textarea placeholder="此说明尚未激活，请忽略填写" cols="50" rows="2"></textarea></div>
+            </div>
+            <div style="margin-bottom: 30px;margin-top: 60px;" id="transfer1"></div>
+        </div>
+        <div class="text-center dashboardItem formBtnBox" style="padding-bottom: 30px;">
+            <input id="update" type="submit" class="btn btn-primary" value="更新"/>
+            <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+            <button type="button" style="margin-left: 15px;" class="btn btn-default" onclick="parent_close()">取消</button>
+        </div>
+
+</body>
+<script>
+    function parent_close() {
+        parent.iframe_chile_close();
+    }
+    var transfer1 = $('#transfer1').transfer({
+        search:'all',
+        data:{
+            left:{{ par_n|safe }},
+            right:{{ par_i|safe }}
+        },
+        title:['未关联参数组','已经关联参数组']
+    });
+    var group_id = {{ grp_id|safe }};
+    $("#update").click(function () {
+        var par_grp_obj =  $("#transfertransfer1").children(".transferRight").children("ul").children("li");
+        var i = 0;
+        var par_grp_id = [];
+        par_grp_obj.each(function () {
+            par_grp_id[i]=$(this).children().attr("data-id");
+            i+=1;
+        });
+        $.ajax({
+            type:"post",
+            url:"/monitor/MonitorManage/ConfigHostGroup/"+group_id+"/update/?host_group=",
+            data:{
+                'groupname':$('#groupname').val(),
+                'group_id':group_id,
+                "par_grp_id":JSON.stringify(par_grp_id),
+                'csrfmiddlewaretoken': $('#csrf_token').val()
+            },
+            success:function(data) {
+                window.location.reload();
+            },
+            error:function(data) {
+                alert("更改组内用户,无法提交数据变更,通讯异常...");
+            }
+        });
+    });
+
+</script>
+</html>

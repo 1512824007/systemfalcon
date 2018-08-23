@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+
+    <script src="/static/public/plugin/jquery-1.12.4/jquery.min.js"></script>
+    <script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="/static/js/gridData.js"></script>
+    <script src="/static/js/echarts-all-3.js"></script>
+    <script src="/static/js/china.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+    <script src="/static/js/underscore.js"></script>
+    <script src="/static/Hchartscode/highcharts.js"></script>
+    <script src="/static/Hchartscode/modules/data.js"></script>
+    <script src="/static/js/g.js"></script>
+    <script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+    <script src="/static/public/plugin/Pagination/pagination.js"></script>
+    <script src="/static/public/js/common.js"></script>
+    <script src="/static/public/js/R.js"></script>
+    <title>监控系统</title>
+</head>
+<body>
+    <div  class="monitorBox">
+        <nav class="topbar navbar navbar-inverse navbar-fixed-top">
+            <div class="containerBox">
+                <div class="navbar-header">
+                    <a class="navbar-brand logoBox" href="#">监控系统</a>
+                    <a class="navbar-brand" href="{% url 'logout' %}" style="font-size:14px;float:right">
+                        <i class="glyphicon glyphicon-off"></i>
+                        退出
+                    </a>
+                    <a class="navbar-brand" href="" style="font-size:14px;float:right">
+                        <i class="glyphicon glyphicon-user"></i>
+                        {{ request.user }}
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div  class="monitorContainer">
+            <ul  class="nav nav-tabs">
+                <li role="presentation"><a href="/monitor/Dashboard/">dashboard</a></li>
+                <li role="presentation"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+                <li role="presentation"><a href="/monitor/MonitorManage/">系统配置</a></li>
+                <li role="presentation" class="active"><a href="/monitor/sysconf/user_center/">用户管理</a></li>
+                <!--<li role="presentation"><a href="#">资源管理</a></li>
+                <li role="presentation"><a href="#">变更管理</a></li>
+                <li role="presentation" class="active"><a href="/monitor/sysconf/user_center/">用户管理</a></li>
+                <li role="presentation"><a href="#">安全检测</a></li>
+                <li role="presentation"><a href="#">FAQ</a></li>-->
+            </ul>
+            <div class="Content">
+                <h4 style="color: #1a78b5;padding: 0 30px;margin: 0;font-size:16px;">用户管理</h4>
+                <div class="row monitorInfoBox" style="position: relative;padding: 15px;">
+                    <ul class="list-group pull-right" style="width: 60%;max-width:180px;text-align: center;position: absolute;top:15px;left: 40px;">
+                        <li id = "US" class="list-group-item"><a href="/monitor/sysconf/user_center/">用户管理</a></li>
+                        <li id = "RM" class="list-group-item"><a href="/monitor/sysconf/module_add/">板块管理</a></li>
+                        <li id = "PM" class="list-group-item"><a href="/monitor/sysconf/group_center/">用户组管理</a></li>
+                        <li id = "LL" class="list-group-item"><a href="/monitor/sysconf/log_center/">用户操作日志</a></li>
+                        <li id = "CM" class="list-group-item"><a href="/monitor/sysconf/classmod_man/">模块管理</a></li>
+                    </ul>
+                    <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+                        {% block content %}
+                        {% endblock %}
+                        <!--<iframe id="us" src="{% url 'user_center' %}" width="100%" height="100%"scrolling="no" frameborder="0" style="visibility:visible"></iframe>
+                    </div>
+                    <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+                        <iframe id="rm" src="{% url 'module_add' %}" width="100%" height="100%" scrolling="no" frameborder="0"
+                                style="visibility:hidden;"></iframe>
+                    </div>
+                    <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+                        <iframe id="pm" src="{% url 'group_center' %}" width="100%" height="100%" scrolling="no" frameborder="0"
+                                style="visibility:hidden;"></iframe>
+                    </div>
+                    <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+                        <iframe id="ll" src="{% url 'log_center' %}" width="100%" height="100%" scrolling="no" frameborder="0"
+                                style="visibility:hidden;"></iframe>
+                    </div>
+                    <div  style="margin-left: 205px;background: #fff; solid: #f1f1f1;">
+                        <iframe id="cm" src="{% url 'classmod_man' %}" width="100%" height="100%" scrolling="no" frameborder="0"
+                                style="visibility:hidden;"></iframe>-->
+                    </div>
+                    <script type="text/javascript" >
+                        $(document).ready(function(){
+                            $("a").each(function () {
+                                if( $(this).attr('href') == window.location.pathname){
+                                    var obj = $(this).parent();
+                                    if (obj.attr('class') == 'list-group-item'){
+                                        obj.addClass('tabActive');
+                                    }
+                                }
+                            })
+                        })
+                        function show(id){
+                            if(id == 'rm'){
+                                $("li").removeClass("tabActive");
+                                $("#RM").addClass('tabActive');
+                            }
+                            else if(id == 'pm'){
+                                $("li").removeClass("tabActive");
+                                $("#PM").addClass('tabActive');
+                            }
+                            else if(id == 'll'){
+                                $("li").removeClass("tabActive");
+                                $("#LL").addClass('tabActive');
+                            }
+                            else if(id == 'cm'){
+                                $("li").removeClass("tabActive");
+                                $("#CM").addClass('tabActive');
+                            }
+                            else{
+                                $("li").removeClass("tabActive");
+                                $("#US").addClass("tabActive");
+                            }
+                            var divList=document.getElementsByTagName('iframe');
+                            for(i=0;i<divList.length;i++){
+                                if(divList[i].id==id){
+                                    divList[i].style.display='block';
+                                    divList[i].style.visibility='visible';
+                                }
+                                else{
+                                    divList[i].style.display='none';
+                                    divList[i].style.visibility='hidden';
+                                }
+                            }
+                        }
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% extends "view/Base2.html" %}
+{% block content %}
+
+    <div class="row ">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+
+                <div class="dashboardItemContent">
+                    {% for i in d %}
+                    <div>
+                        {{ i }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

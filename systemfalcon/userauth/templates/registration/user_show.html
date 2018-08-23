@@ -1,0 +1,12 @@
+{% extends 'registration/base.html' %}
+{% block content %}
+        {% if name_error %}
+          <h5>用户或邮箱已存在,请及时查看邮件验证后登录</h5>
+        {% endif %}
+        {% for f in up_reg %}
+              <div>
+		{{ f }}
+              </div>
+        {% endfor %}
+        <button class="btn btn-default submit btn-sm" value="register" name="register" style="margin-top: 10px;margin-left: -105px">注册</button>
+{% endblock %}

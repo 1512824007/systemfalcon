@@ -1,0 +1,355 @@
+{% extends "view/Base3.html" %}
+{% block content %}
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+    <script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<ul  class="nav nav-tabs">
+                <li role="presentation"><a href="/monitor/Dashboard/">dashboard</a></li>
+                <li role="presentation" class="active"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+                <li role="presentation"><a href="/monitor/MonitorManage/">系统配置</a></li>
+                <li role="presentation"><a href="#">资源管理</a></li>
+                <li role="presentation"><a href="#">变更管理</a></li>
+                <li role="presentation"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+                <li role="presentation"><a href="#">安全检测</a></li>
+                <li role="presentation"><a href="#">FAQ</a></li>
+</ul>
+    <div class="Content">
+            <h4 style="color: #1a78b5;padding: 0 5px;margin: 0;font-size:16px;">设备运行状态详情<a class="backMonitor">返回</a></h4>
+            <div class="row" style="padding: 15px 0;">
+                <div class="col-xs-12">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>基本信息</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table table-hover deviceTable">
+                                    <tbody>
+
+                                  <tr>
+                                        <td >IP地址</td>
+                                        <td>
+                                        {% for i in ip %}
+                                        <a>{{ i }}</a>
+                                        {% endfor %}
+                                        </td>
+                                    </tr>
+
+                    <tr>
+                      <td>主机名</td>
+                      <td>
+                        {% if host %}
+                        {{ host }}
+                        {% else %}
+                        未设置
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>所属IDC</td>
+                      <td>
+                        {% if server.24 %}
+                        <a href="/monitor/MonitorInfo/ServerRoom/Detail/{{ server.24 }}" target="_blank">{{ server.24 }}</a>
+                        {% else %}
+                        未上架
+                        {% endif %}
+                        {% if server.25 %}
+                        ({{ server.25 }})
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>机器型号</td>
+                      <td>{{ server.6 }}-{{ server.7 }}( {{ server.8 }}U)</td>
+                    </tr>
+                    <tr>
+                      <td>序列号</td>
+                      <td>{{ server.9 }}{% if server.10 %}({{ server.10 }}){% endif %}</td>
+                    </tr>
+                    <tr>
+                      <td>操作系统</td>
+                      <td>{{ server.11 }}</td>
+                    </tr>
+                    <tr>
+                      <td>状态</td>
+                      <td>
+                        {% if server.13 %}
+                        <span >已上架</span>
+                        {% else %}
+                        <span class="badge bg-red">未上架</span>
+                        {% endif %}
+                        {% if server.14 %}
+                        <span class="badge bg-yellow">Hypervisor</span>
+                        {% endif %}
+                        {% if server.23 %}
+                        <span class="badge bg-red">维修中</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>所属集群</td>
+                      <td>
+                          {% for i in clu %}
+                          <a href="#" class="btn-info">{{ i }}</a>
+                          {% endfor %}
+                      </td>
+                    </tr>
+                                    </tbody>
+                                </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-12">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>设备配置信息</span>
+                        </div>
+
+                        <div class="dashboardItemContent" style="height: auto;">
+                            <div class="row" style="height: 90%;margin: 10px 0;">
+                                <div class="col-xs-3" style="padding:30px 0;border-right:1px solid #f1f1f1;height:auto">
+                                    <h4 >CPU详情</h4>
+			                  <table class="table table-striped">
+			                    <tr class="hide">
+			                      <th>key</th>
+			                      <th>value</th>
+			                    </tr>
+			                    <tr>
+                      			      <td>CPU数</td>
+			                      <td>{{ hw_cpu|length }}</td>
+			                    </tr>
+			                    {% for each in  hw_cpu  %}
+			                    <tr>
+			                      <td>槽位{{ forloop.counter }}</td>
+			                      {% if each.name and each.cores %}
+			                      <td>{{ each.name }}({{ each.cores}}核)</td>
+			                      {% else %}
+			                      <td>闲置</td>
+			                      {% endif %}
+			                    </tr>
+			                    {% endfor %}
+
+			                  </table>
+				</div>
+                                <div class="col-xs-3 left" style="padding:30px 0;border-right:1px solid #f1f1f1;height:auto">
+				    <h4>硬盘详情</h4>
+			                  <table class="table table-striped">
+
+			                    <tr class="hide">
+			                      <th>key</th>
+			                      <th>value</th>
+			                    </tr>
+			                    <tr>
+			                      <td>总硬盘容量</td>
+			                      <td>{{ hw_hd_size }}GB(硬盘数: {{ hw_hd|length }})</td>
+			                    </tr>
+			                    {% for each in hw_hd %}
+			                    {% if each.size %}
+			                    <tr>
+			                      <td>磁盘信息</td>
+			                      <td>容量: {{ each.size }}GB(厂商: {{ each.vendor }}, 型号: {{ each.product }}, 类型: {{ each.type }})</td>
+			                    </tr>
+			                    {% endif %}
+			                    {% endfor %}
+
+			                  </table>
+                                </div>
+                                <div class="col-xs-3 left" style="padding:30px 0;border-right:1px solid #f1f1f1;height:auto">
+				    <h4>网卡信息</h4>
+						<table class="table table-striped">
+
+				                    <tr class="hide">
+				                      <th>key</th>
+				                      <th>value</th>
+				                    </tr>
+				                    <tr>
+				                      <td>物理网卡</td>
+				                      <td>{{ hw_nic|length }}</td>
+				                    </tr>
+				                    {% for each in hw_nic %}
+				                    <tr>
+				                      <td>接口{{ each.name }}</td>
+				                      <td>型号: {{ each.product }}({{ each.type }}), Mac: {{ each.mac }}, Speed: {{ each.speed }}Mbps</td>
+				                    </tr>
+				                    {% endfor %}
+				                  </table>
+                                </div>
+                                <div class="col-xs-3 left" style="padding:30px 0;border-right:1px solid #f1f1f1;height:auto">
+				    <h4>内存详情</h4>
+							<table class="table table-striped">
+
+					                    <tr class="hide">
+					                      <th>key</th>
+					                      <th>value</th>
+					                    </tr>
+					                    <tr>
+					                      <td>总内存尺寸</td>
+					                      <td>{{ hw_mem_size }}MB</td>
+					                    </tr>
+					                    <tr>
+					                      <td>内存条数</td>
+					                      <td>{{ hw_mem_num }}(槽位: {{ hw_mem|length }})</td>
+					                    </tr>
+					                    {% for each in hw_mem %}
+					                    <tr>
+					                      {% if each.size %}
+					                      <td>槽位{{ forloop.counter }}</td>
+					                      <td>{{ each.size }}MB(Speed: {{ each.speed }}MHz)</td>
+					                      {% else %}
+					                      {% endif %}
+					                    </tr>
+					                    {% endfor %}
+
+					                  </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-12">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>设备故障列表</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <table class="table table-hover deviceList">
+                                <thead>
+				                    <th></th>
+
+                                    <th>ID</th>
+                                    <th>故障类型</th>
+                                    <th>故障对象</th>
+                                    <th>故障描述</th>
+                                    <th>故障时间</th>
+                                    <th>当前状态</th>
+                                    <th>操作</th>
+                                    </thead>
+
+                                <tbody>
+                                {% for alarm in device_event %}
+                                    <tr>
+                                        <td><input type="checkbox" alarm="{{ alarm.event_id }}"></td>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">设备类</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">{{ alarm.hostname }}</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">
+                                            <a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ alarm.hostname }}&aralm={{ alarm.aralm|urlencode }}"
+                                               target='_blank'>{{ alarm.aralm }}</a>
+                                        </td>
+                                        <td>{{ alarm.date }}</td>
+                                        <td>未处理</td>
+                                        <td><a class="btn btn-default" href="javascript:solve('{{ alarm.event_id }}');" >已知</a></td>
+                                    </tr>
+                                     {% endfor %}
+                                     {% for alarm in app_event %}
+                                    <tr>
+                                        <td><input type="checkbox" alarm="{{ alarm.event_id }}"></td>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">服务类</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">{{ alarm.hostname }}</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">
+                                            <a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ alarm.hostname }}&aralm={{ alarm.aralm|urlencode }}"
+                                               target='_blank'>{{ alarm.aralm }}</a>
+                                        </td>
+                                        <td>{{ alarm.date }}</td>
+                                        <td>未处理</td>
+                                        <td><a class="btn btn-default" href="javascript:solve('{{ alarm.event_id }}');" >已知</a></td>
+                                    </tr>
+                                     {% endfor %}
+
+                                     {% for alarm in network_event %}
+                                    <tr>
+                                        <td><input type="checkbox" alarm="{{ alarm.event_id }}"></td>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">网络类</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">{{ alarm.hostname }}</td>
+                                        <td title="机房：{{ alarm.room }}&nbsp;&nbsp;IP:{{ alarm.ip }}">
+                                            <a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ alarm.hostname }}&aralm={{ alarm.aralm|urlencode }}"
+                                               target='_blank'>{{ alarm.aralm }}</a>
+                                        </td>
+                                        <td>{{ alarm.date }}</td>
+                                        <td>未处理</td>
+                                        <td><a class="btn btn-default" href="javascript:solve('{{ alarm.event_id }}');">已知</a></td>
+                                    </tr>
+                                     {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rmt20">
+                <div class="col-xs-12">
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>运行状态监控</span>
+                        </div>
+                        <div class="col-xs-3" style="padding-top: 50px;">
+
+                                <label for="" class="col-xs-6 text-right" style="padding-top: 5px;">开始时间</label>
+                                <input id="begin" size="16" type="text" value="" readonly class="form_datetime">
+
+                        </div>
+                        <div class="col-xs-3" style="padding-top: 50px;">
+
+                                <label for="" class="col-xs-6 text-right" style="padding-top: 5px;">结束时间</label>
+                                <input id="over"  type="text" value="" readonly class="form_datetime">
+
+                        </div>
+                        <script type="text/javascript">
+                                    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii',autoclose: true,
+                                        todayBtn: true,
+                                        todayHighlight: true,
+                                        pickerPosition: "bottom-left",
+                                        language: 'zh-CN'
+                                    });
+                                    function redirect() {
+
+                                    var b_search =document.getElementById('begin');
+                                    var str_1 = b_search.value
+                                    str_1 = str_1.replace(/-/g,"/");
+                                    var date_1 = new Date(str_1);
+                                    var humanDate_1 = new Date(Date.UTC(date_1.getFullYear(),date_1.getMonth(),
+                                    date_1.getDate(),date_1.getHours(),date_1.getMinutes(), date_1.getSeconds()));
+                                    begin = humanDate_1.getTime()/1000 - 8*60*60
+
+                                    var o_search =document.getElementById('over');
+                                    var str = o_search.value
+                                    str = str.replace(/-/g,"/");
+                                    var date = new Date(str);
+                                    var humanDate = new Date(Date.UTC(date.getFullYear(),date.getMonth(),
+                                    date.getDate(),date.getHours(),date.getMinutes(), date.getSeconds()));
+                                    over = humanDate.getTime()/1000 - 8*60*60
+                                    if(str == ''){
+                                        var timestamp = Date.parse(new Date())/1000;
+                                        over = timestamp
+                                    }
+                                    if(str_1 == ''){
+                                        begin = over - 18000
+                                    }
+
+                                    var obj = document.getElementById(3);
+                                    obj.src='/monitor/top10/Device_graph/{{ host }}/'+begin+'/'+over
+                                    obj.style='display:block'
+
+                                }
+                                </script>
+                            <div class="col-xs-2 text-center" style="padding-top: 50px;">
+                                <a onclick="redirect()" class="btn btn-primary">查询</a><a href="" class="btn">重置</a>
+                            </div>
+			<div>
+                        <iframe  id="3" src="/monitor/top10/Device_graph/{{ host }}/{{ s }}/{{ e }}" width="100%" height="1575px" scrolling="no" frameborder="0"></iframe>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+{% endblock %}

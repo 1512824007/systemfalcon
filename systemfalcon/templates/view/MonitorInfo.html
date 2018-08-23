@@ -1,0 +1,206 @@
+{% extends "view/Base3.html" %}
+{% block content %}
+<ul  class="nav nav-tabs">
+    <li role="presentation"><a href="/monitor/Dashboard/">dashboard</a></li>
+    <li role="presentation" class="active"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+    <li role="presentation"><a href="/monitor/MonitorManage/">系统配置</a></li>
+    <li role="presentation"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+    <!--<li role="presentation"><a href="#">资源管理</a></li>
+    <li role="presentation"><a href="#">变更管理</a></li>
+    <li role="presentation"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+    <li role="presentation"><a href="#">安全检测</a></li>
+    <li role="presentation"><a href="#">FAQ</a></li>-->
+</ul>
+<link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/js/common.js"></script>
+	<div class="Content">
+
+            <h4 style="color: #1a78b5;padding: 0 30px;margin: 0;font-size:16px;">监控信息页</h4>
+            <div class="row monitorInfoBox" style="position: relative;padding: 15px;">
+                <ul class="list-group pull-right" style="width: 60%;max-width:180px;text-align: center;position: absolute;top:15px;left: 40px;">
+                    <li class="list-group-item"><a data-url="/monitor/MonitorInfo/TroubleList/" class="UrlStorageClick" >故障列表</a></li>
+                    <li class="list-group-item"><a href="/monitor/top10/Bandwidth/">机房使用带宽</a></li>
+                    <li class="list-group-item"><a href="/monitor/MonitorInfo/UserRequest/">产品并发用户数</a></li>
+                </ul>
+                <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemTitle">
+                                    <span>机房搜索</span>
+                                </div>
+                                <div class="dashboardItemContent chosenSelect">
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <label for="" class="col-xs-6 text-right" style="padding-top: 5px;">
+                                            机房名/机房别名：
+                                        </label>
+                                        <select name="idc" id="1" style="width:50%;height: 30px;" class="pull-left">
+                                            {% for i in room_all %}
+                                            <option value={{ i.name }}>{{ i.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <a href="ServerRoom.html" id="11" onclick="redirect_idc()" target="_blank" class="btn btn-primary">确定</a>
+                                        <script>
+                                            function redirect_idc() {
+                                                var idc_search=document.getElementById(1);
+                                                var index = idc_search.selectedIndex;
+                                                var value = idc_search.options[index].value;
+                                                var obj = document.getElementById(11);
+                                                obj.href='/monitor/MonitorInfo/ServerRoom/Detail/'+value+'/'
+                                            }
+                                        </script>
+                                        <a class="btn">重置</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 98%;background: #f1f1f1;height: 30px;margin: 0 auto;"></div>
+                    <div class="row rmt20">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemTitle">
+                                    <span>设备搜索</span>
+                                </div>
+                                <div class="dashboardItemContent chosenSelect">
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <label for="" class="col-xs-6 text-right" style="padding-top: 5px;">
+                                            设备主机名/IP地址：
+                                        </label>
+                                        <select name="host" id="2"  style="width:50%;height: 30px;" class="pull-left">
+					{% for i in host %}
+                                            <option value={{ i.0 }}>{{ i.0}}</option>
+					{% endfor %}
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <a id="22" onclick="redirect_host0()" href="/monitor/MonitorInfo/Device/" target="_blank" class="btn btn-primary">确定</a>
+                                <script>
+                                function redirect_host0() {
+                                    var idc_search=document.getElementById(2);
+                                    var index = idc_search.selectedIndex;
+                                    var value = idc_search.options[index].value;
+
+                                    var obj = document.getElementById(22);
+
+                                    obj.href='/monitor/MonitorInfo/Device/'+value+'/'
+                                }
+                                </script>
+
+                                        <a class="btn">重置</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 98%;background: #f1f1f1;height: 30px;margin: 0 auto;"></div>
+                    <div class="row rmt20">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemTitle">
+                                    <span>产品搜索</span>
+                                </div>
+                                <div class="dashboardItemContent chosenSelect">
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <label for="" class="col-xs-6 text-right" style="padding-top: 5px;">
+                                            产品/服务角色名：
+                                        </label>
+                                        <select name="project" id="4" style="width:50%;height: 30px;" class="pull-left">
+                                            {% for i in pro %}
+                                            <option value={{ i.0 }}>{{ i.0 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <a id="44" onclick="redirect_pro()" href="/monitor/top10/project_hostlist/" target="_blank" class="btn btn-primary">确定</a>
+                                        <script>
+                                        function redirect_pro() {
+                                            var idc_search=document.getElementById(4);
+                                            var index = idc_search.selectedIndex;
+                                            var value = idc_search.options[index].value;
+
+                                            var obj = document.getElementById(44);
+
+                                            obj.href='/monitor/top10/project_hostlist/'+value
+                                        }
+                                        </script>
+                                        <a class="btn">重置</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 98%;background: #f1f1f1;height: 30px;margin: 0 auto;"></div>
+                    <div class="row rmt20">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemTitle">
+                                    <span>故障搜索</span>
+                                </div>
+                                <div class="dashboardItemContent chosenSelect">
+                                   <div class="col-xs-6 rmt60 text-center">
+                                        <label for="" class="col-xs-6 text-right" style="padding-top: 5px;">
+                                            故障ID/主机名：
+                                        </label>
+                                        <select name="hostname" id="3" style="width:50%;height: 30px;" class="pull-left">
+                                            {% for event in event %}
+
+                                            <option value="?hostname={{ event.hostname }}&aralm={{ event.aralm|urlencode }}">{{ forloop.counter }}.&nbsp;{{ event.hostname }}</option>
+
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <a id="33" onclick="redirect_host()" href="/monitor/MonitorInfo/TroubleInfo/" target="_blank" class="btn btn-primary">确定</a>
+					<a class="btn">重置</a>
+                                        <script>
+                                        function redirect_host() {
+                                            var idc_search=document.getElementById(3);
+                                            var index = idc_search.selectedIndex;
+                                            var value = idc_search.options[index].value;
+
+                                            var obj = document.getElementById(33);
+
+                                            obj.href='/monitor/MonitorInfo/TroubleInfo/'+value
+                                        }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div style="width: 98%;background: #f1f1f1;height: 30px;margin: 0 auto;"></div>
+                    <div class="row rmt20">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemTitle">
+                                    <span>网络搜索</span>
+                                </div>
+                                <div class="dashboardItemContent chosenSelect">
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <label for="" class="col-xs-6 text-right" style="padding-top: 5px;">
+                                            源/目的机房名：
+                                        </label>
+                                        <select name="" id="" value="1" style="width:50%;height: 30px;" class="pull-left">
+                                            <option value="1">asdf</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6 rmt60 text-center">
+                                        <a href="../view/ServerRoom.html" class="btn btn-primary">确定</a>
+                                        <a class="btn">重置</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div style="width: 98%;background: #f1f1f1;height: 30px;margin: 0 auto;"></div>
+                </div>
+            </div>
+    </div>
+
+{% endblock %}

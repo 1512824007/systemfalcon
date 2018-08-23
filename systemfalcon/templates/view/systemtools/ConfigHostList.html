@@ -1,0 +1,285 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/js/common.js"></script>
+<style type="text/css">
+    body {
+        font-family: "Microsoft YaHei UI";
+        background-color:#F6F8FA;
+    }
+</style>
+<div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+    <div class="row ">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+            {% include 'view/systemconfig/message.html' %}
+            <label class="col-md-12" style="color: #FF5733">{{ dstatus|safe }}</label>
+                <div class="dashboardItemTitle">
+                    <span class="col-md-12">步进设备名称到监控系统主机表</span>
+                </div>
+                <div class="dashboardItemContent chosenSelect">
+                    <div class="col-md-12 rmt30" style="padding: 10px;">
+                        <div class="col-xs-8 text-left">
+                            <label class="col-xs-4 text-left">
+                                openfalcon设备列表：
+                            </label>
+                            <select id="1" style="width:50%;height: 30px;" class="pull-left">
+                                {% for i in falcon_host_list %}
+                                <option value={{ i.1 }}>{{ i.0 }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="col-xs-4 text-left" >主机组:</label>
+                            <select id="2" class="form-control" style="width:50%;height: 30px;" required>
+                                {% for group in group_list %}
+                                <option  value="{{ group.id }}">{{ group.host_group }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <a  onclick="redirect_idc()" type="submit" class="btn btn-primary">添加</a>
+                            <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+                            <script>
+                                function redirect_idc() {
+                                    var idc_search=document.getElementById(1);
+                                    var index = idc_search.selectedIndex;
+                                    var ip = idc_search.options[index].value;
+                                    var hostname = idc_search.options[index].text;
+                                    var idc_all = {{ room_list|safe}};
+                                    for( var i=0;i< idc_all.length;i++){
+                                        if(idc_all[i][0] == hostname){
+                                            var host_room = idc_all[i][1];
+                                        }
+                                    }
+                                    var group_search=document.getElementById(2);
+                                    var index_g = group_search.selectedIndex;
+                                    //var id = idc_search.options[index].value;
+                                    var host_group = group_search.options[index_g].text;
+                                    $.ajax({
+                                        type:"post",
+                                        url:"/monitor/MonitorManage/ConfigHost/",
+                                        data:{
+                                            "hostadd":JSON.stringify([ip,hostname,host_group,host_room]),
+                                            'csrfmiddlewaretoken': $('#csrf_token').val()
+                                        },
+                                        success:function(data) {
+                                            alert(data);
+                                            location.reload();
+                                        },
+                                        error:function(data) {
+                                            alert("无法提交数据变更,通讯异常(可能主机已存在)...");
+                                        }
+                                    });
+                                }
+                            </script>
+                            <a class="btn">重置</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 100%;background: #f1f1f1;height: 30px;margin:30px auto 10px auto;"></div>
+    <div class="row">
+        <div class="col-xs-12">
+             <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span class="col-md-12">主机信息表<a href="/monitor/MonitorManage/SaltManagementManage/" class="pull-right rmr15">Salt管理</a></span>
+                </div>
+                <div class="dashboardItemContent">
+                    <form method="post" name="formName2" action="/monitor/MonitorManage/ConfigHost/">
+                        {% csrf_token %}
+                        <div style="width: auto;height:auto;padding-left:10px;">
+                            <hr width=100% size=3 color=#00ffff style="FILTER: alpha(opacity=100,finishopacity=0,style=3)">
+                            <div class="panel panel-default" style="padding: 5px;">
+                                    <table id="datatable" class="table table-striped table-bordered">
+                                        <thead>
+                                        <tr style="color: #212F3D;background-color: #3498DB">
+                                            <td style="width: 1%"><input type="checkbox" name="alls" onClick="selectAll('formName2','id')" title="全选/反选"></td>
+                                            <td style="width: 2%">ID</td>
+                                            <td style="width: 20%">主机名称</td>
+                                            <td style="width: 10%">主机组</td>
+                                            <td style="width: 10%">salt管理状态</td>
+                                            <!--<td style="width: 25%">采集工具</td>-->
+                                            <td style="width: 7%">探测</td>
+                                            <td style="width: 15%">管理</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for host in host_list %}
+                                        <tr id="{{ host.pk }}">
+                                            <td style="width: 1%"><input class="icheck" type="checkbox" value="{{ host.pk }}" name="id"/></td>
+                                            <td style="width: 2%"> {{ forloop.counter }}</td>
+                                            <td style="width: 20%" title="{{ host.ip }}|{{ host.host_room }}">{{ host.hostname }}</td>
+                                            <td style="width: 10%">{{ host.host_grp }}</td>
+                                            <!--<td style="width: 25%">
+                                                {% for h in host.systemconfigprivate_file_set.values %}
+                                                    {{ h.private_file_name }}
+                                                    {% if not forloop.last %}
+                                                        ,
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>-->
+                                            <td style="width: 10%" class="text-center">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" >
+                                                        {% if host.hostname in salt_key_list  %}
+                                                            已认证
+                                                        {% else %}
+                                                            未认证
+                                                        {% endif %}
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    {% if host.hostname in salt_minions_pre %}
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                            <li><a onclick="control_rsa(this,'{{ host.hostname }}','accept')">接受认证</a></li>
+                                                            <li><a onclick="control_rsa(this,'{{ host.hostname }}','reject')">拒绝</a></li>
+                                                        </ul>
+                                                    {% elif host.hostname in salt_key_list%}
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                            <li><a onclick="control_rsa(this,'{{ host.hostname }}','cancel')">取消认证</a></li>
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td style="width: 7%" class="text-center">
+                                                <div class="btn-group tooltip-demo" data-toggle="buttons">
+                                                    <span class="glyphicon glyphicon-send" onclick="device_status(this,'{{ host.hostname }}')" data-toggle="tooltip" data-placement="bottom" title="点击探测" style="color:#f8ac59"></span>
+                                                </div>
+                                            </td>
+                                            <td style="width: 15%" class="text-center">
+                                                <a  class="btn btn-primary" href="/monitor/MonitorManage/ConfigHost/detail/{{ host.pk }}/">详情</a>
+                                                <a target="_blank" class="btn-sm"  href="/monitor/MonitorManage/ConfigHost/hostdetail/{{ host.pk }}/">修改</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        <script>
+                                            function control_rsa(obj,host,op) {
+                                                $.ajax({
+                                                    type:"post",
+                                                    url:"/monitor/MonitorManage/SaltControlRsa/",
+                                                    data:{
+                                                        'host':host,
+                                                        'op':op,
+                                                        'csrfmiddlewaretoken': $('#csrf_token').val()
+                                                    },
+                                                    success:function(data) {
+                                                        alert(data);
+                                                        window.location.reload();
+                                                    },
+                                                    error:function() {
+                                                        alert("无法提交数据变更,通讯异常...");
+                                                    }
+                                                });
+                                            }
+                                            function device_status(obj,host){
+                                                $(obj).removeAttr('onclick');
+                                                $.ajax({
+                                                    type:"post",
+                                                    url:"/monitor/MonitorManage/ConfigHostListStatus/",
+                                                    data:{
+                                                        'host':host,
+                                                        'csrfmiddlewaretoken': $('#csrf_token').val()
+                                                    },
+                                                    success:function(data) {
+                                                        if(data == 'True'){
+                                                            obj.title='客户端存活';
+                                                            obj.style='color:#2ad49e';
+                                                            $(obj).attr('class','glyphicon glyphicon-ok');
+                                                        }
+                                                        else{
+                                                            obj.title='客户端无法探测';
+                                                            obj.style='color:#ff6846';
+                                                            $(obj).attr('class','glyphicon glyphicon-remove');
+                                                        }
+                                                    }
+                                                    //error:function(data) {
+                                                    //    alert("无法提交数据变更,通讯异常...");
+                                                    //}
+                                                });
+                                            }
+                                        </script>
+                                    </table>
+                                    <button  class="btn btn-danger" name="deleting" value="check" onclick="return del();">删除</button>
+                                    <button  class="btn btn-primary" name="acceptrsa" value="check" >接受认证</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#datatable').dataTable({
+             "pagingType":   "full_numbers",
+             "autoFill": true,
+             "iDisplayLength": 15,
+             "aLengthMenu": [[15,25, 50, 100, -1], [15,25, 50, 100, "All"]]
+        });
+        //setInterval(device_status,60);
+
+    });
+    /* 全选/反选
+       formName所在form的name值
+       checkboxName checkbox的name值
+       注意：所有checkbox的name值必须一样
+    */
+    var checkedAll = false;
+    function selectAll(formName,checkboxName){
+        var form = document.all.item(formName);
+        var elements = form.elements[checkboxName];
+        for(var i=0;i<elements.length;i++){
+            var e = elements[i];
+            if(checkedAll){
+                e.checked = false;
+                form.alls.checked = false;
+            }else{
+                e.checked = true;
+                form.alls.checked = true;
+            }
+        }
+        if(checkedAll){
+            checkedAll = false;
+        }else{
+            checkedAll = true;
+        }
+    }
+    /* 检查是否有checkbox被选中
+       checkbox的name值必须一样，这样才能达到全选效果
+    */
+    function checkAll(formName,checkboxName){
+        var hasCheck = false;
+        var form = document.all.item(formName);
+        var elements = form.elements[checkboxName];
+        for(var i=0;i<elements.length;i++){
+            var e = elements[i];
+            if(e.checked){
+                hasCheck = true;
+            }
+        }
+        return hasCheck;
+    }
+    /* 执行操作 */
+    function do_action(){
+        if(!checkAll("formName","id")){
+            alert("请至少选择一项！");
+        }
+    }
+
+    function del() {
+        console.log('what');
+        var msg =confirm("确定要删除？");
+        if(msg==true){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+</script>
+{% endblock %}

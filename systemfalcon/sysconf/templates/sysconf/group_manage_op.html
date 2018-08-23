@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/plugin/Transfer/transfer.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <title>监控系统</title>
+</head>
+<body>
+
+    <div class="modal-body" style="max-width: 800px;">
+        <form style="min-height: 200px;" action="">
+            <div class="form-group">
+                <div class="col-xs-3 text-right">
+                    <label for="">用户组名:</label>
+                </div>
+                <div class="col-xs-9">
+                    <input id="id_name" value="{{ name }}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-3 text-right">
+                    <label  for="">描述:</label>
+                </div>
+                <div class="col-xs-9">
+                    <textarea  id="description" cols="50" rows="6">{{ description.0.0 }}</textarea>
+                </div>
+            </div>
+            <div style="margin:0px 0 30px 0;" id="transfer1"></div>
+            <div  id="transfer2"></div>
+            <div  id="transfer10"></div>
+        </form>
+    </div>
+    <div class="text-center dashboardItem formBtnBox" style="padding-bottom: 30px;max-width: 800px;">
+        <button id="ok" type="button" class="btn  btn-primary" >确定</button>
+        <button type="button" style="margin-left: 15px;" class="btn btn-default" data-dismiss="modal">取消</button>
+        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+    </div>
+
+</body>
+<script src="/static/public/plugin/jquery-1.12.4/jquery.js"></script>
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/plugin/Transfer/transfer.js"></script>
+<script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/public/js/R.js"></script>
+<script>
+
+    var transfer1 = $('#transfer1').transfer({
+        search:'all',
+        data:{
+            left:{{ usr_n|safe }},
+            right:{{ usr_i|safe }}
+        },
+        title:['组外用户','组内用户']
+    });
+    var transfer2 = $('#transfer2').transfer({
+        search:'all',
+        data:{
+            left:{{ mod_n|safe }},
+            right:{{ mod_i|safe }}
+        },
+        title:['可选系统功能','已选系统功能']
+    });
+    var transfer10 = $("#transfer10").transfer({
+        search:'all',
+        data:{
+            left:{{ grp_n|safe }},
+            right:{{ grp_i|safe }}
+        },
+        title:['可用设备组','选中的设备组']
+    })
+    var group_id = ({{ id|safe }});
+    var group_name = "{{ name|safe }}";
+    $("#ok").click(function () {
+        //var old_des = {{ description.0.0|safe }};
+        var module_obj =  $("#transfertransfer2").children(".transferRight").children("ul").children("li");
+        var j = 0;
+        var b = [];
+        module_obj.each(function () {
+            b[j]=$(this).children().attr("data-id");
+            j+=1;
+        });
+        var device_obj =  $("#transfertransfer10").children(".transferRight").children("ul").children("li");
+        var x = 0;
+        var grpid = [];
+        device_obj.each(function () {
+            grpid[x]=$(this).children().attr("data-id");
+            x+=1;
+        });
+        var user_obj =  $("#transfertransfer1").children(".transferRight").children("ul").children("li");
+        var i = 0;
+        var user_id = [];
+        user_obj.each(function () {
+            user_id[i]=$(this).children().attr("data-id");
+            i+=1;
+        });
+        console.log(user_id);
+        console.log(b);
+        console.log(grpid);
+        $.ajax({
+            type:"post",
+            url:"/monitor/sysconf/group_save2/",
+            data:{
+                "gId":group_id,
+                "user":JSON.stringify(user_id),
+                "grp_name":group_name,
+                "per_id":JSON.stringify(b),
+                "grp":JSON.stringify(grpid),
+                'csrfmiddlewaretoken': $('#csrf_token').val()
+            },
+            success:function(data) {
+                alert(data);
+            },
+            error:function(data) {
+                alert("更改组内用户,无法提交数据变更,通讯异常...");
+            }
+        });
+        $.ajax({
+            method:"post",
+            url:"/monitor/sysconf/group_change2/",
+            data:{
+                "id":group_id,
+                "old_name":group_name,
+                //"old_des":JSON.stringify(old_des),
+                "new_name":JSON.stringify($("#id_name").val()),
+                "new_description":JSON.stringify($("#description").val()),
+                'csrfmiddlewaretoken': $('#csrf_token').val()
+            },
+            success:function(data) {
+                alert(data);
+            },
+            error:function(data) {
+                alert("无法提交数据(组名、描述)变更,通讯有问题，请稍后刷新...");
+            }
+        });
+
+    });
+</script>

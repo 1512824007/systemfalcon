@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDN监控系统</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/local.css" />
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link rel="stylesheet" type="text/css" href="/static/css/all.min.css" />
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-12">
+	<div class="dashboardItemContent" style="position: relative;">
+	    <div class="row" style="padding:20px">
+
+            <div class="col-xs-8">
+                <a data-target="#circleContent" data-slide-to="0" class="btn btn-primary">直播</a>
+                <a data-target="#circleContent" data-slide-to="1" class="btn btn-primary">点播</a>
+                <a data-target="#circleContent" data-slide-to="2" class="btn btn-primary">页面</a>
+            </div>
+            <div class="col-xs-4">
+	      <a href="/monitor/MonitorInfo/UserRequest/" target="_blank" class="pull-right rmr15 UrlStorageClick">显示详情</a>
+
+            </div>
+		<div class="row" style="padding:10px">
+		</div>
+		
+
+	   <div id="circleContent" class="carousel slide" data-ride="carousel">
+            
+            <div class="carousel-inner" role="listbox">
+                <div class="item active" style="width: auto;height: auto;">
+
+                    <iframe id="live" src="/monitor/hcgraph/index/chart/live/" width="100%" height="430px" scrolling="no" frameborder="0" > </iframe>
+                </div>
+                <div class="item" style="width: auto;height: auto;">
+
+                    <iframe id="media" src="/monitor/hcgraph/index/chart/media/ "  width="100%" height="430px" scrolling="no" frameborder="0" > </iframe>
+                </div>
+                <div class="item" style="width: auto;height: auto; ">
+
+                    <iframe id="web" src="/monitor/hcgraph/index/chart/web/" width="100%" height="430px" scrolling="no" frameborder="0"> </iframe>
+                </div>
+            </div>
+
+            </div>
+
+             </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+    <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+    <script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script>
+    $(function(){
+        $('#circleContent').carousel({
+          interval: 15000
+        });
+    });
+  </script>
+</html>
+
+

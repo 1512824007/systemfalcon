@@ -1,0 +1,286 @@
+{% extends "view/Base3.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/js/common.js"></script>
+<ul  class="nav nav-tabs">
+    <li role="presentation"><a href="/monitor/Dashboard/">dashboard</a></li>
+    <li role="presentation" class="active"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+    <li role="presentation"><a href="/monitor/MonitorManage/">系统配置</a></li>
+    <li role="presentation"><a href="#">资源管理</a></li>
+    <li role="presentation"><a href="#">变更管理</a></li>
+    <li role="presentation"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+    <li role="presentation"><a href="#">安全检测</a></li>
+    <li role="presentation"><a href="#">FAQ</a></li>
+</ul>
+    <div class="Content">
+        <h4 style="color: #1a78b5;padding: 0 30px;margin: 0;font-size:16px;">故障列表页<a class="backMonitor">返回</a></h4>
+        <div class="row monitorInfoBox" style="position: relative;padding: 15px;min-width:1170px">
+            <ul class="list-group pull-right" style="width: 60%;max-width:180px;text-align: center;position: absolute;top:15px;left: 41px;">
+                <li class="list-group-item tabActive"><a>故障列表</a></li>
+                <li class="list-group-item"><a href="/monitor/MonitorInfo/TroubleGroup/">故障分组</a></li>
+                <li class="list-group-item"><a href="/monitor/MonitorInfo/TroubleBI/">故障统计</a></li>
+                <li class="list-group-item"><a href="/monitor/MonitorInfo/TroubleHistory/">历史故障</a></li>
+            </ul>
+            <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="dashboardItem" style="min-height:0!important;">
+                            <div class="dashboardItemContent chosenSelect">
+                                <form method="GET">
+                                    <div class="row">
+                                        <div class="col-xs-5 rmt30 text-center">
+                                            <label for="" class="col-xs-3 text-right" style="padding-top: 5px;">
+                                                机房：
+                                            </label>
+                                            <select name="room" id="" placeholder="机房" required style="width:30%;height: 30px;" class="pull-left" data-bv-notempty>
+                                               <option selected="selected" disabled>请选择机房</option>
+                                                 {% for group in alarm_group %}
+                                                  <option value="{{ group.room }}">{{ group.room }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <a class="rml40 moreSearch">高级搜索 <i class="glyphicon glyphicon-menu-down rml10"></i></a>
+                                        </div>
+                                        <div class="col-xs-2 rmt30 text-right">
+                                            <label style="font-size: 25px; " class="text-danger">告警数量:&nbsp;{{ counts }}&nbsp;</label>
+                                        </div>
+                                        <div class="col-xs-3 rmt30 text-right">
+                                            <button class="btn btn-primary" type="submit">查询</button>
+                                            <a href="/monitor/MonitorInfo/TroubleList/" class="btn btn-warning" type="submit">重置</a>
+                                        </div>
+                                    </div>
+                                    <div class="moreSearchBox">
+                                        <div class="row">
+                                            <div class="col-xs-3 rmt30 text-center">
+                                                <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">
+                                                    产品：
+                                                </label>
+                                                <select name="product" id="" style="width:50%;height: 30px;" class="pull-left">
+                                                    <option selected="selected" disabled>请选择产品</option>
+                                                    {% for alarm in cluster_group %}
+                                                    <option value="{{ alarm.cluster }}">{{ alarm.cluster }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="col-xs-3 rmt30 text-center">
+                                                <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">
+                                                    故障类型：
+                                                </label>
+                                                <select name="alarm" id=""  style="width:50%;height: 30px;" class="pull-left">
+                                                    <option selected="selected" disabled>请选择故障</option>
+                                                    {% for lists in alarm_list %}
+                                                    <option value="{{ lists.metric }}">{{ lists.metric }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="row rmt20">
+                                            <div class="col-xs-3">
+                                                <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">
+                                                    状态：
+                                                </label>
+                                                <select name="" id="" value="1" style="width:50%;height: 30px;" class="pull-left">
+                                                    <option selected="selected" disabled>请选择状态</option>
+                                                    <option value="1"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">
+                                                    故障类型：
+                                                </label>
+                                                <select name="" id="" value="1" style="width:50%;height: 30px;" class="pull-left">
+                                                    <option selected="selected" disabled>请选择故障</option>
+                                                    <option value="1"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">
+                                                    设备品牌：
+                                                </label>
+                                                <select name="" id="" value="1" style="width:50%;height: 30px;" class="pull-left">
+                                                    <option selected="selected" disabled>请选择品牌</option>
+                                                    <option value="1"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <label for="" class="col-xs-5 text-right" style="padding-top: 5px;">
+                                                    结束时间：
+                                                </label>
+                                                <input type="text" class="input-sm col-xs-6" >
+                                            </div>
+                                        </div>-->
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 98%;background: #f1f1f1;height: 30px;margin:30px auto;"></div>
+                <ul class="nav nav-tabs TroubleTab">
+                    {% if device_count %}
+                    <li role="presentation" data-id="tab1" class="active"><a>设备类&nbsp;&nbsp;&nbsp;<label style="color: #ff1d0e;font-size: 20px;">{{ device_count }}</label></a></li>
+                    {% endif %}
+                    {% if  network_count%}
+                    <li role="presentation" data-id="tab2"><a >网络类&nbsp;&nbsp;&nbsp;<label style="color: #ff1d0e;font-size: 20px;">{{ network_count }}</label></a></li>
+                    {% endif %}
+                    {% if app_count %}
+                    <li role="presentation" data-id="tab3"><a >服务类&nbsp;&nbsp;&nbsp;<label style="color: #ff1d0e;font-size: 20px;">{{ app_count  }}</label></a></li>
+                    {% endif %}
+                </ul>
+                <div class="tabBox tab1">
+                    <div class="row rp20">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemContent">
+                                    <table class="table table-hover deviceList">
+                                        <thead>
+                                        <th></th>
+                                        <th>ID</th>
+                                        <th>机房名</th>
+                                        <th>故障对象</th>
+                                        <th>产品</th>
+                                        <th>故障简述</th>
+                                        <th>发生时间</th>
+                                        <th>操作</th>
+                                        </thead>
+                                        <tbody>
+                                        {% for alarm in device_event %}
+                                        <tr>
+                                            <td><input type="checkbox" alarm="{{ alarm.event_id }}"></td>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td title="IP：{{ alarm.ip }}"><a target="_blank" href="/monitor/MonitorInfo/ServerRoom/Detail/{{ alarm.room }}/">{{ alarm.room }}</a></td>
+                                            <td title="IP：{{ alarm.ip }}"><a href="/monitor/MonitorInfo/Device/{{ alarm.hostname }}" target="_blank">{{ alarm.hostname }}</a></td>
+                                            <td>{{ alarm.cluster }}</td>
+                                            <td title="{{ alarm.aralm }}">
+                                                <a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ alarm.hostname }}&aralm={{ alarm.aralm|urlencode }}" target='_blank'>
+                                                    {{ alarm.aralm|truncatewords_html:5 }}
+                                                </a>
+                                            </td>
+                                            {% load tz%}
+                                            {% localtime off %}
+                                            <td>{{ alarm.start_date }}</td>
+                                            {% endlocaltime %}
+                                            {#<td>{{ alarm.alarm_status }}</td>#}
+                                            <td><a href="javascript:solve('{{ alarm.event_id }}');" class="btn btn-default">已知</a></td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <div style="padding-top:5px;">
+                                        <a class="btn btn-default" href="javascript:all_select();">全选</a><a class="btn btn-default" href="javascript:reverse_select();">反选</a>
+                                        <button class="btn btn-warning btn-sm" onclick="batch_solve();">标记选中部分为已解决</button>
+                                    </div>
+                                </div>
+                                <div style="padding: 10px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tabBox tab2 hide">
+                    <div class="row rp20">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemContent">
+                                    <table class="table table-hover deviceList">
+                                        <thead>
+                                        <th></th>
+                                        <th>ID</th>
+                                        <th>机房名</th>
+                                        <th>故障对象</th>
+                                        <th>产品</th>
+                                        <th>故障简述</th>
+                                        <th>发生时间</th>
+                                        <th>操作</th>
+                                        </thead>
+                                        <tbody>
+                                        {% for alarm in network_event %}
+                                        <tr>
+                                            <td><input type="checkbox" alarm="{{ alarm.event_id }}"></td>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td title="IP：{{ alarm.ip }}"><a target="_blank" href="/monitor/MonitorInfo/ServerRoom/Detail/{{ alarm.room }}/">{{ alarm.room }}</a></td>
+                                            <td title="IP：{{ alarm.ip }}"><a href="/monitor/MonitorInfo/Device/{{ alarm.hostname }}" target="_blank">{{ alarm.hostname }}</td>
+                                            <td>{{ alarm.cluster }}</td>
+                                            <td title="{{ alarm.aralm }}">
+                                                <a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ alarm.hostname }}&aralm={{ alarm.aralm|urlencode }}" target='_blank'>
+                                                    {{ alarm.aralm|truncatewords_html:5 }}
+                                                </a>
+                                            </td>
+                                            {% load tz%}
+                                            {% localtime off %}
+                                            <td>{{ alarm.start_date }}</td>
+                                            {% endlocaltime %}
+                                            {#<td>{{ alarm.alarm_status }}</td>#}
+                                            <td><a href="javascript:solve('{{ alarm.event_id }}');" class="btn btn-default">已知</a></td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <div style="padding-top:5px;">
+                                        <a class="btn btn-default"  href="javascript:all_select();">全选</a><a class="btn btn-default" href="javascript:reverse_select();">反选</a>
+                                        <button class="btn btn-warning btn-sm" onclick="batch_solve();">标记选中部分为已解决</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tabBox tab3 hide">
+                    <div class="row rp20">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                                <div class="dashboardItemContent">
+                                    <table class="table table-hover deviceList">
+
+                                         <thead>
+                                        <th></th>
+                                        <th>ID</th>
+                                        <th>机房名</th>
+                                        <th>故障对象</th>
+                                        <th>产品</th>
+                                        <th>故障简述</th>
+                                        <th>发生时间</th>
+                                        <th>操作</th>
+                                        </thead>
+                                        <tbody>
+                                        {% for alarm in app_event %}
+                                        <tr>
+                                            <td><input type="checkbox" alarm="{{ alarm.event_id }}"></td>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td title="IP：{{ alarm.ip }}"><a target="_blank" href="/monitor/MonitorInfo/ServerRoom/Detail/{{ alarm.room }}/">{{ alarm.room }}</a></td>
+                                            <td title="IP：{{ alarm.ip }}"><a href="/monitor/MonitorInfo/Device/{{ alarm.hostname }}" target="_blank">{{ alarm.hostname }}</td>
+                                            <td>{{ alarm.cluster }}</td>
+                                            <td title="{{ alarm.aralm }}"><a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ alarm.hostname }}&aralm={{ alarm.aralm|urlencode }}" target='_blank'>{{ alarm.aralm|truncatewords_html:5 }}</a></td>
+                                            {% load tz%}
+                                            {% localtime off %}
+                                            <td>{{ alarm.start_date }}</td>
+                                            {% endlocaltime %}
+                                            {#<td>{{ alarm.alarm_status }}</td>#}
+                                            <td><a href="javascript:solve('{{ alarm.event_id }}');" class="btn btn-default">已知</a></td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <div style="padding-top:5px;">
+                                        <a class="btn btn-default" href="javascript:all_select();">全选</a><a class="btn btn-default" href="javascript:reverse_select();">反选</a>
+                                        <button class="btn btn-warning btn-sm" onclick="batch_solve();">标记选中部分为已解决</button>
+                                    </div>
+                                    <div class="pagination"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script language="JavaScript">
+    function myrefresh(){
+       window.location.reload();
+    }
+    setTimeout('myrefresh()',60000); //指定60秒刷新一次
+    monitor.TroubleList();
+</script>
+
+{% endblock %}

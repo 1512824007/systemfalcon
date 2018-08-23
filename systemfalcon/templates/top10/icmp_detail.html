@@ -1,0 +1,380 @@
+{% extends "view/Base2.html" %}
+{% block content %}
+<div id="innerbody" class="panel-body">
+   <div id="chart_avg" style="min-width:90%;min-height:50%"></div>
+
+            <div style="margin-left: 100px" class="graph-mainparameter">
+                <table class="Table" style="margin: 0px;border: 0px;color:#c5c5c7;background-color: white">
+                    <tbody id="graph-tbody">
+                        <tr>
+                            <th >&nbsp;</th>
+                            <th >&nbsp;&nbsp;last</th>
+                            <th >&nbsp;&nbsp;min</th>
+                            <th >&nbsp;&nbsp;avg</th>
+                            <th >&nbsp;&nbsp;max</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+   </div>
+    <div id="chart_loss" style="min-width:90%;min-height:50%"></div>
+
+            <div style="margin-left: 100px" class="graph-mainparameter">
+                <table class="Table" style="margin: 0px;border: 0px;color:#c5c5c7;background-color: white">
+                    <tbody id="graph2-tbody">
+                        <tr>
+                            <th >&nbsp;</th>
+                            <th >&nbsp;&nbsp;last</th>
+                            <th >&nbsp;&nbsp;min</th>
+                            <th >&nbsp;&nbsp;avg</th>
+                            <th >&nbsp;&nbsp;max</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+
+    <div id="chart_mdev" style="min-width:90%;min-height:50%"></div>
+
+            <div style="margin-left: 100px" class="graph-mainparameter">
+                <table class="Table" style="margin: 0px;border: 0px;color:#c5c5c7;background-color: white">
+                    <tbody id="graph3-tbody">
+                        <tr>
+                            <th >&nbsp;</th>
+                            <th >&nbsp;&nbsp;last</th>
+                            <th >&nbsp;&nbsp;min</th>
+                            <th >&nbsp;&nbsp;avg</th>
+                            <th >&nbsp;&nbsp;max</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+
+    <div id="chart_linkspeed" style="min-width:90%;min-height:50%"></div>
+
+            <div style="margin-left: 100px" class="graph-mainparameter">
+                <table class="Table" style="margin: 0px;border: 0px;color:#c5c5c7;background-color: white">
+                    <tbody id="graph4-tbody">
+                        <tr>
+                            <th >&nbsp;</th>
+                            <th >&nbsp;&nbsp;last</th>
+                            <th >&nbsp;&nbsp;min</th>
+                            <th >&nbsp;&nbsp;avg</th>
+                            <th >&nbsp;&nbsp;max</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</div>
+
+<script>
+
+
+$(function () {
+
+        Highchartsgraph();
+        datahandle();  //创建对数据处理的类
+        Dyna_Add_Tags(); // 动态添加绘图下面的显示last,min,avg,max标签
+    });
+
+
+    var colors_list = [
+                "#FF6A6A", "#00BFFF", "#A52A2A",
+                "#CDCD00", "#008878", "#FF0000",
+                "#00FF00", "#7B68EE", "#FF00FF",
+                "#EEAEEE", "#00AEEE", "#AEEEEE",
+
+                "#FFB90F", "#00B90F", "#00FFFF",
+                "#DC143C", "#BFEFFF", "#AA7500",
+                "#F0E68C", "#00E68C", "#AAE68C",
+                "#EE9A49", "#009A49", "#AA9A49",
+
+                "#FFA54F", "#00A54F", "#AAA54F",
+                "#8B4789", "#004789", "#AA4789",
+                "#00CDCD", "#00CDCD", "#AACDCD",
+                "#EE8262", "#008262", "#AA8262",
+
+                "#FF8C00", "#008C00", "#AA8C00",
+                "#8B3626", "#003626", "#AA3626",
+                "#00BFFF", "#00E8AA", "#AAE8AA",
+                "#EE7621", "#007621", "#AA7621"
+                ];
+
+    function Highchartsgraph() {
+
+        Highcharts.setOptions({
+            global: { useUTC: false }, // 北京时间
+            chart:{
+                plotBackgroundColor: 'rgba(255, 255, 255, .9)',//绘图区背景颜色，以及透明度
+                zoomType:'x'// 水平缩放
+
+            },
+            credits:{
+                enabled:false // 禁用版权信息
+            },
+            title:{
+                text:null
+            },
+
+            xAxis:{
+                type:'datetime',
+                dateTimeLabelFormats: { // x轴时间显示格式
+                    millisecond: '%H:%M:%S.%L',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                }
+
+            },
+            tooltip: {
+                dateTimeLabelFormats: { // 数据提示框时间显示格式
+                    millisecond: '%H:%M:%S.%L',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%Y-%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                },
+                valueDecimals: 2  // 保留两位小数
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+            colors: colors_list
+
+        });
+
+        var None = null;  //因为数据里面有None值，将js中的null代替None，这个不会报错。
+        var series = [];
+        var gd = {{ GD|safe }};
+        for(var i in gd){
+            var name = gd[i].counter;
+            ob = new datahandle(gd[i].data);
+            var data = ob.filter();
+            series = series.concat({name:name,data:data})
+        }
+
+        var chart1 = new Highcharts.Chart({
+            chart:{
+                renderTo:'chart_avg'
+            },
+            series:series
+        });
+        var series_2 = [];
+        var gd_2 = {{ GD_2|safe }};
+        for(var i in gd_2){
+            var name = gd_2[i].counter;
+            ob = new datahandle(gd_2[i].data);
+            var data = ob.filter();
+            series_2 = series_2.concat({name:name,data:data})
+        }
+        var chart2 = new Highcharts.Chart({
+            chart:{
+                renderTo:'chart_loss'
+            },
+            series:series_2
+        });
+
+        var series_3 = [];
+        var gd_3 = {{ GD_3|safe }};
+        for(var i in gd_3){
+            var name = gd_3[i].counter;
+            ob = new datahandle(gd_3[i].data);
+            var data = ob.filter();
+            series_3 = series_3.concat({name:name,data:data})
+        }
+        var chart3 = new Highcharts.Chart({
+            chart:{
+                renderTo:'chart_mdev'
+            },
+            series:series_3
+        });
+
+        var series_4 = [];
+        var gd_4 = {{ GD_4|safe }};
+        for(var i in gd_4){
+            var name = gd_4[i].counter;
+            ob = new datahandle(gd_4[i].data);
+            var data = ob.filter();
+            series_4 = series_4.concat({name:name,data:data})
+        }
+        var chart4 = new Highcharts.Chart({
+            chart:{
+                renderTo:'chart_linkspeed'
+            },
+            series:series_4
+        });
+        Dyna_Add_Tags(gd);
+        Dyna_Add_Tags2(gd_2);
+        Dyna_Add_Tags3(gd_3);
+        Dyna_Add_Tags4(gd_4);
+    }
+
+
+    function datahandle(data) {
+
+        this.fil_data = data;
+
+        this.filter=function () {  // 将数据中的null值过滤掉
+
+            var filterdata = _.filter(this.fil_data,function (i) {
+                return i[1] != null;
+            });
+            return filterdata
+        };
+
+        this.summary = function () {
+
+            var d = this.fil_data;
+
+            d = _.filter(d,function (i) {
+                return i[1] !== null;
+            });
+            // 这里的数据结构是 [[timestamp, value],[timestamp, value]......]
+            var last = d[d.length-1][1];
+            var max = _.max(d,function (i) {return i[1]})[1];  // i 就是每个[timestamp, value] return i[1]按照value找出最大,返回 i
+            var min = _.min(d,function (i) {return i[1]})[1];
+            var sum = sum = _.reduce(d,function (memo,i) {return memo + i[1]}, 0); // memo 是reduce的初始值
+            var avg = (sum/d.length);
+
+            return {
+                last: last.toFixed(2), // 保留两位小数
+                max: max.toFixed(2),
+                min: min.toFixed(2),
+                sum: sum.toFixed(2),
+                avg: avg.toFixed(2)
+            };
+
+        }
+
+    }
+
+    function Dyna_Add_Tags(series) {
+        var tbody = $("#graph-tbody");
+        for(var i in series){
+            var background = colors_list[i]; // 背景颜色 就是列表的索引对应的颜色
+            var summary_list = new datahandle(series[i]['data']).summary();
+            if(series[i]["counter"].indexOf('avg')>-1){
+                series[i]["counter"] = '平均延迟'
+            }
+            else if(series[i]["counter"].indexOf('max')>-1){
+                series[i]["counter"] = '最大延迟'
+            }
+            else if(series[i]["counter"].indexOf('min')>-1){
+                series[i]["counter"] = '最小延迟'
+            }
+            var tr = '<tr>'
+            + '<td><span style="padding:1px"><span style="width: 10px;height: 10px;display: inline-block;margin-right: 5px;background:'
+            + background + '"></span></span>'+ series[i]["counter"] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.last + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.min + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.avg + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.max + '&nbsp;&nbsp;' +'</td></tr>';
+            // 每个标签都是需要导入。
+            tbody.append($(tr));
+
+        }
+    }
+    function Dyna_Add_Tags2(series) {
+        var tbody = $("#graph2-tbody");
+        for(var i in series){
+            var background = colors_list[i]; // 背景颜色 就是列表的索引对应的颜色
+            var summary_list = new datahandle(series[i]['data']).summary();
+            if(series[i]["counter"].indexOf('loss')>-1){
+                series[i]["counter"] = '丢包率'
+            }
+            else if(series[i]["counter"].indexOf('mdev')>-1){
+                series[i]["counter"] = '网络抖动情况'
+            }
+            var tr = '<tr>'
+            + '<td><span style="padding:1px"><span style="width: 10px;height: 10px;display: inline-block;margin-right: 5px;background:'
+            + background + '"></span></span>'+ series[i]["counter"] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.last + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.min + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.avg + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.max + '&nbsp;&nbsp;' +'</td></tr>';
+            // 每个标签都是需要导入。
+            tbody.append($(tr));
+        }
+    }
+
+    function Dyna_Add_Tags3(series) {
+        var tbody = $("#graph3-tbody");
+        for(var i in series){
+            var background = colors_list[i]; // 背景颜色 就是列表的索引对应的颜色
+            var summary_list = new datahandle(series[i]['data']).summary();
+            if(series[i]["counter"].indexOf('loss')>-1){
+                series[i]["counter"] = '丢包率'
+            }
+            else if(series[i]["counter"].indexOf('mdev')>-1){
+                series[i]["counter"] = '网络抖动情况'
+            }
+            var tr = '<tr>'
+            + '<td><span style="padding:1px"><span style="width: 10px;height: 10px;display: inline-block;margin-right: 5px;background:'
+            + background + '"></span></span>'+ series[i]["counter"] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.last + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.min + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.avg + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.max + '&nbsp;&nbsp;' +'</td></tr>';
+            // 每个标签都是需要导入。
+            tbody.append($(tr));
+        }
+    }
+
+    function Dyna_Add_Tags4(series) {
+        var tbody = $("#graph4-tbody");
+        for(var i in series){
+            var background = colors_list[i]; // 背景颜色 就是列表的索引对应的颜色
+            var summary_list = new datahandle(series[i]['data']).summary();
+            if(series[i]["counter"].indexOf('linkspeed')>-1){
+                series[i]["counter"] = '下载速度'
+            }
+            else if(series[i]["counter"].indexOf('mdev')>-1){
+                series[i]["counter"] = '网络抖动情况'
+            }
+            var tr = '<tr>'
+            + '<td><span style="padding:1px"><span style="width: 10px;height: 10px;display: inline-block;margin-right: 5px;background:'
+            + background + '"></span></span>'+ series[i]["counter"] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.last + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.min + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.avg + '&nbsp;&nbsp;' +'</td>'
+            + '<td>' + summary_list.max + '&nbsp;&nbsp;' +'</td></tr>';
+            // 每个标签都是需要导入。
+            tbody.append($(tr));
+        }
+    }
+</script>
+
+{% endblock %}
+

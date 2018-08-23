@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/plugin/Transfer/transfer.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <title>监控系统</title>
+</head>
+<body onload="IFrameResize()">
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="dashboardItemTitle">
+                            <span style="float:left;margin-top: -10px">用户组列表</span>
+                            <p style="float:left;margin-left: 60px;margin-top: 10px">共{{ grp.count }}个记录</p>
+                            <p style="float:left;margin-left: 60px;margin-top: 10px">
+                                每页显示
+                                    <select id = "select1" >
+                                        <option value={{ height }}>{{ height }}</option>
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                    </select>
+                                个
+                            </p>
+                            <a class="btn btn-primary addGroupBtn"  style="float:right">新增用户组</a>
+                        </div>
+                        <div class="dashboardItemContent " >
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th nowrap width="160px">用户组名</th>
+                                    <th nowrap width="160px">创建时间</th>
+                                    <th nowrap width="160px">描述</th>
+                                    <th nowrap width="160px">包含用户</th>
+                                    <th nowrap width="160px">可使用系统功能</th>
+                                    <th nowrap width="160px">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in contacts %}
+                                    <tr>
+                                        <td style="display: none;">{{ i.id }}</td>
+                                        <td>{{ i.name }}</td>
+                                        <td>
+                                            {% for j in grpprofile %}
+                                                {% if i.id == j.group_id %}
+                                                    {{ j.date }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for j in grpprofile %}
+                                                {% if i.id == j.group_id %}
+                                                    {{ j.description }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for x in user_group %}
+                                                {% if x.0 == i.id %}
+                                                    {% for y in x.1 %}
+                                                        {{ y }},
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for x in user_group %}
+                                                {% if x.0 == i.id %}
+                                                    {% for y in x.2 %}
+                                                        {{ y }},
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td nowrap><a id ="u1">管理  </a><a id="u2">  删除</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <ul class="pagination">
+                                <li>
+                                    {% if contacts.has_previous %}
+                                        <a href="?page={{ contacts.previous_page_number }}">&laquo;</a>
+                                    {% endif %}
+                                </li>
+                                <li>
+                                    <span class="current">
+                                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+                                    </span>
+                                </li>
+                                <li>
+                                    {% if contacts.has_next %}
+                                        <a href="?page={{ contacts.next_page_number }}">&raquo;</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                            <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</div>
+<div class="modal fade manageGroupModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">管理用户组</h4>
+        </div>
+        <iframe id="if0" frameborder="0" height="500" scrolling="auto" width="100%"></iframe>
+
+    </div>
+</div>
+<div class="modal fade deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <h3 style="margin:50px;text-align: center;font-size:18px;font-weight:500">是否确认删除用户组以及相应配置？</h3>
+            </div>
+            <div class="text-center dashboardItem" style="padding-bottom: 30px;">
+                <button id="confirm" type="button" class="btn  btn-primary " >确定</button>
+                <button type="button" style="margin-left: 15px;" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade addGroupModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">管理用户组</h4>
+            </div>
+            <div class="modal-body">
+                <form style="min-height: 200px;" action="">
+                    <div class="form-group">
+                        <div class="col-xs-3 text-right">
+                            <label for="">用户组名:</label>
+                        </div>
+                        <div class="col-xs-9">
+                            <input name="name" id="id_name" placeholder="请输入用户组名" value="" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label  for="">描述:</label>
+                        </div>
+                        <div class="col-xs-9">
+                            <textarea name ="description" id="description" placeholder="请填写描述" cols="50" rows="6"></textarea>
+                        </div>
+                    </div>
+                    <div style="margin:120px 0 30px 0;" id="transfer3"></div>
+                    <div id="transfer4"></div>
+                </form>
+            </div>
+            <div class="text-center dashboardItem formBtnBox" style="padding-bottom: 30px;">
+                <button onclick="save_g()" class="btn  btn-primary" >确定</button>
+                <button type="button" style="margin-left: 15px;" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/public/plugin/jquery-1.12.4/jquery.js"></script>
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/plugin/Transfer/transfer.js"></script>
+<script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/public/js/R.js"></script>
+<script>
+    function IFrameResize(){
+        var obj = parent.document.getElementById("if0"); //取得父页面IFrame对象
+        obj.height = this.document.body.scrollHeight; //调整父页面中IFrame的高度为此页面的高度
+        var obj2 = parent.parent.document.getElementById("pm"); //取得父页面IFrame对象
+        obj2.height = this.document.body.scrollHeight+200; //调整父页面中IFrame的高度为此页面的高度
+    }
+    $('.addGroupBtn').on('click',function () {
+        var transfer3 = $('#transfer3').transfer({
+            search:'all',
+            data:{
+                left:{{ device_group|safe }},
+                right:[]
+            },
+            title:['全部设备组','所选设备组']
+        });
+        var transfer4 = $('#transfer4').transfer({
+            search:'all',
+            data:{
+                left:{{ per_all|safe }},
+                right:[]
+            },
+            title:['全部系统功能','可使用系统功能']
+        });
+        $('.addGroupModal').modal('show');
+    });
+    $("td #u1").click(function() {
+        $('.manageGroupModal').modal('show');
+        var obj = $(this).parent().parent();
+        var id = obj.children()[0].innerHTML;
+        var name = obj.children()[1].innerHTML;
+        $("#if0").attr("src","/monitor/sysconf/group_manage_op/?name="+name+"&id="+id);
+    });
+
+    $(document).ready(function() {
+        $("#select1").change(function () {
+            var height = $(this).val();
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/groupManage/",
+                data:{
+                    "height":height,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    window.location = '/monitor/sysconf/groupManage/?height='+height;
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯异常...");
+                }
+            });
+        });
+        $("td #u2").click(function() {
+            var obj = $(this).parent().parent();
+            var id = obj.children()[0].innerHTML;
+            var name = obj.children()[1].innerHTML;
+            $('.deleteModal').modal('show');
+            $("#confirm").click(function () {
+                $.ajax({
+                    type:"post",
+                    url:"/monitor/sysconf/group_del/",
+                    data:{
+                        "gId":id,
+                        "grp_name":name,
+                        'csrfmiddlewaretoken': $('#csrf_token').val()
+                    },
+                    success:function(data) {
+                        alert(data);
+                        location.reload();
+                    },
+                    error:function(data) {
+                        alert("删除组,无法提交数据变更,通讯异常...");
+                    }
+                });
+            })
+
+        });
+    });
+    function save_g() {
+        var id_name = document.getElementById("id_name").value;
+        var des = document.getElementById("description").value;
+        var device_group =  $("#transfertransfer3").children(".transferRight").children("ul").children("li");
+        var i = 0;
+        var grpid = [];
+        device_group.each(function () {
+            grpid[i]=$(this).children().attr("data-id");
+            i+=1;
+        });
+        var module_obj =  $("#transfertransfer4").children(".transferRight").children("ul").children("li");
+        var j = 0;
+        var b = [];
+        module_obj.each(function () {
+            b[j]=$(this).children().attr("data-id");
+            j+=1;
+        });
+        $.ajax({
+            type:"post",
+            url:"/monitor/sysconf/group_add/",
+            data:{
+                "id_name":id_name,
+                "mod_id":JSON.stringify(b),
+                "des":JSON.stringify(des),
+                "grp":JSON.stringify(grpid),
+                'csrfmiddlewaretoken': $('#csrf_token').val()
+            },
+            success:function(data) {
+                alert(data);
+            },
+            error:function(data) {
+                alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+            }
+        });
+    }
+</script>
+</html>

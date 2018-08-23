@@ -1,0 +1,189 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+<style type="text/css">
+#customers
+  {
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  width:100%;
+  border-collapse:collapse;
+  }
+
+#customers td, #customers th
+  {
+  font-size:1em;
+  border:1px solid #B2DFDB;
+  padding:3px 7px 2px 7px;
+  }
+
+#customers th
+  {
+  font-size:1.1em;
+  text-align:left;
+  padding-top:5px;
+  padding-bottom:4px;
+  background-color:#5DADE2;
+  color:#ffffff;
+  }
+
+#customers tr.alt td
+  {
+  color:#000000;
+  background-color:#EAF2D3;
+  }
+</style>
+
+                <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+                    <div class="row ">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                            {% include 'view/systemconfig/message.html' %}
+                            <label class="col-md-12" style="color: #FF5733">{{ error|safe }}</label>
+                                <div class="dashboardItemTitle">
+                                    <span class="col-md-12">实时状态</span>
+                                </div>
+                                <div class="dashboardItemContent">
+                                    <div class="col-md-12" style="padding-top: 10px">
+                                     </div>
+                                         <div style="width: auto;height:auto;padding-top:20px;">
+                                             <div id="result"></div>
+                                             <button class="btn btn-warning" type="button" id="flush" value="check">日志获取</button>
+                                         </div>
+                                    <script>
+                                        $(document).ready(function () {
+                                            $.ajaxSetup({
+                                                data:{csrfmiddlewaretoken:'{{ csrf_token }}'}
+                                                });
+                                            $('#flush').click(function () {
+                                                //var minions=$("{{ minions }}").val();
+                                                //var jid = $("{{ jid }}").val();
+                                                $.ajax({
+                                                    type:"POST",
+                                                    data:'',
+                                                    url:"{% url 'SaltMessage' %}",
+                                                    cache:false,
+                                                    async : false,
+                                                    dataType:"json",
+                                                    success:function (ret) {
+                                                        var name="";
+                                                        var result="";
+                                                        $.each(ret,function(i,n){
+                                                        name+="<tr>"
+                                                            +"<td>"+n["jid"]+"</td>"
+                                                            +"<td>"+n["hostname"]+"</td>"
+                                                            +"<td>"+n["fun"]+"</td>"
+                                                            +"<td>"+n["fun_args"]+"</td>"
+                                                            +"<td>"+n["success"]+"</td>"
+                                                            +"<td>"+n["return"]+"</td>"
+                                                            +"<td>"+n["alter_time"]+"</td>"+"</tr>";
+
+                                                        });
+                                                        result="<table id='customers' frame='border' rules='all' >" +"<thead>"+
+                                                            "<tr>" +
+                                                            "<th style='width: 13%'>Jid</th>" +
+                                                            "<th style='width: 15%'>主机名</th>" +
+                                                            "<th style='width: 5%'>模块</th>" +
+                                                            "<th style='width: 10%'>参数</th>" +
+                                                            "<th style='width: 7%'>执行状态</th>" +
+                                                            "<th style='width: 37%'>结果</th>" +
+                                                            "<th style='width: 17%'>执行时间</th>" +
+                                                            "</tr>" +
+                                                            "</thead>"
+                                                            +"<tbody>"
+                                                                +name
+                                                            +"</tbody>"+
+                                                            "</table>";
+                                                        $('#result').html(result);
+                                                    }
+                                                });
+                                                return false;
+                                            });
+                                        })
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<script src="/static/js/jquery.dataTables.min.js"></script>
+<script src="/static/js/dataTables.bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+            $('#datatable').dataTable({
+                 "pagingType":   "full_numbers",
+                 "autoFill": true,
+		         "iDisplayLength": 15,
+		         "aLengthMenu": [[15,25, 50, 100, -1], [15,25, 50, 100, "All"]]
+		       });
+            });
+</script>
+
+<!-- /Datatables -->
+<script>
+/* 全选/反选
+   formName所在form的name值
+   checkboxName checkbox的name值
+   注意：所有checkbox的name值必须一样
+*/
+    var checkedAll = false;
+    function selectAll(formName,checkboxName){
+        var form = document.all.item(formName);
+        var elements = form.elements[checkboxName];
+        for(var i=0;i<elements.length;i++){
+            var e = elements[i];
+            if(checkedAll){
+                e.checked = false;
+                form.alls.checked = false;
+            }else{
+                e.checked = true;
+                form.alls.checked = true;
+            }
+        }
+        if(checkedAll){
+            checkedAll = false;
+        }else{
+            checkedAll = true;
+        }
+    }
+    /* 检查是否有checkbox被选中
+       checkbox的name值必须一样，这样才能达到全选效果
+    */
+    function checkAll(formName,checkboxName){
+        var hasCheck = false;
+        var form = document.all.item(formName);
+        var elements = form.elements[checkboxName];
+        for(var i=0;i<elements.length;i++){
+            var e = elements[i];
+            if(e.checked){
+                hasCheck = true;
+            }
+        }
+        return hasCheck;
+    }
+    /* 执行操作 */
+    function do_action(){
+        if(!checkAll("formName","id")){
+            alert("请至少选择一项！");
+        }
+    }
+    function del() {
+        var msg =confirm("您真的确定要删除吗？");
+        if(msg==true){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+</script>
+
+<script type="text/javascript">
+    setInterval("abc()",2000);
+    function abc()
+    {
+       document.getElementById("flush").click();
+    }
+</script>
+{% endblock %}

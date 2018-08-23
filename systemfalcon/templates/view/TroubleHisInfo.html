@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/static/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="/static/js/gridData.js"></script>
+    <script src="/static/js/echarts-all-3.js"></script>
+    <script src="/static/js/china.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+    <script src="/static/js/underscore.js"></script>
+    <script src="/static/Hchartscode/highcharts.js"></script>
+    <script src="/static/Hchartscode/modules/data.js"></script>
+    <script src="/static/js/g.js"></script>
+    <title>监控系统</title>
+</head>
+<body>
+    <div  class="monitorBox">
+        <nav class="topbar navbar navbar-inverse navbar-fixed-top">
+            <div class="containerBox">
+                <div class="navbar-header">
+                    <a class="navbar-brand logoBox" href="#">监控系统</a>
+                    <a class="navbar-brand" href="{% url 'logout' %}" style="font-size:14px;float:right">
+                        <i class="glyphicon glyphicon-off"></i>
+                        退出
+                    </a>
+                    <a class="navbar-brand" href="" style="font-size:14px;float:right">
+                        <i class="glyphicon glyphicon-user"></i>
+                        {{ request.user }}
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div  class="monitorContainer">
+            <ul  class="nav nav-tabs">
+                <li role="presentation" class="active"><a href="/monitor/Dashboard/">dashboard</a></li>
+                <li role="presentation"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+                <li role="presentation"><a href="/monitor/MonitorManage/">系统配置</a></li>
+                <li role="presentation"><a href="#">资源管理</a></li>
+                <li role="presentation"><a href="#">变更管理</a></li>
+                <li role="presentation"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+                <li role="presentation"><a href="#">安全检测</a></li>
+                <li role="presentation"><a href="#">FAQ</a></li>
+            </ul>
+            <div class="Content">
+            <h4 style="color: #1a78b5;padding: 0 30px;margin: 0;font-size:16px;">故障详情页<a class="backMonitor">返回</a></h4>
+            <div class="row monitorInfoBox" style="position: relative;padding: 15px;min-width:1170px">
+                <ul class="list-group pull-right" style="width: 60%;max-width:180px;text-align: center;position: absolute;top:15px;left: 41px;">
+                    <li class="list-group-item tabActive"><a>故障详情</a></li>
+                </ul>
+                <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+
+                    <!-- Device Alarm Info -->
+                    <div class="row">
+            <div class="col-lg-12">
+              <div class="box">
+                <div class="box-header">
+                    <h4 class="box-title" style="color: darkgreen"><i class="fa fa-pie-chart"></i>&nbsp;告警内容</h4>
+                </div>
+                <div class="box-body box-padding" style="color: #0b0b0b">
+
+
+
+
+
+        <!-- Main content -->
+        <section class="content">
+
+
+          <div class="row">
+            <!-- Basic info -->
+            <div class="col-xs-12">
+              <div class="box">
+                {% csrf_token %}
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                       {% for rs in alarm_info %}
+                     <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>机房名称:</td>
+                      <td>{{ rs.room }}</td>
+                    </tr>
+                      <tr>
+                          <td>主机名称:</td>
+                          <td>{{ rs.hostname }}</td>
+                      </tr>
+                    <tr>
+                      <td>IP&nbsp;&nbsp;&nbsp;地址:</td>
+                      <td>{{ rs.ip }}</td>
+                    </tr>
+                    <tr>
+                      <td>业务集群:</td>
+                      <td>{{ rs.cluster }}</td>
+                    </tr>
+                       {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Device Info -->
+          <div class="row">
+            <div class="col-xs-12 col-lg-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title" style="color: #14a6ef;">详情</h4>
+                </div>
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                      {% for ar in alarm_info %}
+
+                    <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>事件内容:</td>
+                      <td>{{ ar.aralm }}</td>
+                    </tr>
+                        {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-lg-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title" style="color: #14a6ef;">告警</h4>
+                </div>
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                       {% for ar in alarm_info %}
+                    <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>时间:</td>
+		      {% load tz %}
+		      {% localtime off %}
+                      <td>{{ ar.start_date }}</td>
+		      {% endlocaltime %}
+                    </tr>
+                    <tr>
+                      <td>状态:</td>
+                      <td>{{ ar.alarm_status }}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-lg-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title" style="color: #14a6ef;">发生时长</h4>
+                </div>
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                  {% for ar in alarm_info %}
+                    <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>时长:</td>
+                      <td>
+                          {% if ar.end_date%}
+                              {{  ar.start_date|timesince:ar.end_date }}
+                          {% else %}
+                              {{ '' }}
+                          {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-lg-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title" style="color: #14a6ef;">恢复</h4>
+                </div>
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                    {% for ar in alarm_info %}
+                    <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>时间:</td>
+		      {% load tz %}
+                      {% localtime off %}
+                      <td>
+                          {% if ar.end_date%}
+                              {{  ar.end_date }}
+                          {% else %}
+                              {{ '' }}
+                          {% endif %}
+                      </td>
+		      {% endlocaltime %}
+                    </tr>
+                    <tr>
+                      <td>状态:</td>
+                      <td>{{ ar.alarm_status_ok }}</td>
+                    </tr>
+                    {% endfor %}
+
+                  </table>
+                </div>
+              </div>
+            </div>
+              <div class="col-xs-12">
+         </div>
+          </div>
+        </section>
+              </div>
+               </div>
+            </div>
+            </div>
+
+                    <script type="text/javascript">
+        jQuery(function ($) {
+            var performance = [12, 43, 34, 22, 12, 33, 4, 17, 22, 34, 54, 67],
+                visits = [123, 323, 443, 32],
+                traffic = [
+                {
+                    Source: "Direct", Amount: 323, Change: 53, Percent: 23, Target: 600
+                },
+                {
+                    Source: "Refer", Amount: 345, Change: 34, Percent: 45, Target: 567
+                },
+                {
+                    Source: "Social", Amount: 567, Change: 67, Percent: 23, Target: 456
+                },
+                {
+                    Source: "Search", Amount: 234, Change: 23, Percent: 56, Target: 890
+                },
+                {
+                    Source: "Internal", Amount: 111, Change: 78, Percent: 12, Target: 345
+                }];
+
+
+            $("#shieldui-chart1").shieldChart({
+                theme: "dark",
+
+                primaryHeader: {
+                    text: "Visitors"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                dataSeries: [{
+                    seriesType: "area",
+                    collectionAlias: "Q Data",
+                    data: performance
+                }]
+            });
+
+            $("#shieldui-chart2").shieldChart({
+                theme: "dark",
+                primaryHeader: {
+                    text: "Traffic Per week"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                dataSeries: [{
+                    seriesType: "pie",
+                    collectionAlias: "traffic",
+                    data: visits
+                }]
+            });
+
+            $("#shieldui-grid1").shieldGrid({
+                dataSource: {
+                    data: traffic
+                },
+                sorting: {
+                    multiple: true
+                },
+                rowHover: false,
+                paging: false,
+                columns: [
+                { field: "Source", width: "170px", title: "Source" },
+                { field: "Amount", title: "Amount" },
+                { field: "Percent", title: "Percent", format: "{0} %" },
+                { field: "Target", title: "Target" },
+                ]
+            });
+        });
+    </script>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <a class="backTop"><i class="glyphicon glyphicon-menu-up"></i></a>
+</body>
+<script src="/static/public/plugin/jquery-1.12.4/jquery.min.js"></script>
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/plugin/Pagination/pagination.js"></script>
+<script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/public/js/common.js"></script>
+<script src="/static/public/js/R.js"></script>
+<script>
+    monitor.DashBoard();
+</script>
+<script>
+    monitor.TroubleList();
+</script>
+<script>
+    monitor.Device();
+</script>
+<script>
+    monitor.MonitorInfo();
+</script>
+<script>
+    monitor.ServerRoom();
+</script>
+<script>
+    monitor.TroubleBI();
+</script>
+<script>
+    monitor.TroubleInfo();
+</script>
+<script>
+    monitor.UserRequest();
+</script>
+</html>

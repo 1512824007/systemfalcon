@@ -1,0 +1,125 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+    <link href="/static/bootstrap-fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+    <!-- piexif.min.js is only needed if you wish to resize images before upload to restore exif data.
+         This must be loaded before fileinput.min.js -->
+    <script src="/static/bootstrap-fileinput/js/plugins/piexif.min.js" type="text/javascript"></script>
+    <!-- sortable.min.js is only needed if you wish to sort / rearrange files in initial preview.
+         This must be loaded before fileinput.min.js -->
+    <script src="/static/bootstrap-fileinput/js/plugins/sortable.min.js" type="text/javascript"></script>
+    <!-- purify.min.js is only needed if you wish to purify HTML content in your preview for HTML files.
+         This must be loaded before fileinput.min.js -->
+    <script src="/static/bootstrap-fileinput/js/plugins/purify.min.js" type="text/javascript"></script>
+    <!-- the main fileinput plugin file -->
+    <script src="/static/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <!-- bootstrap.js below is needed if you wish to zoom and view file content
+         in a larger detailed modal dialog -->
+    <script src="/static/bootstrap-fileinput/themes/fa/theme.js"></script>
+    <!-- optionally if you need translation for your language then include
+        locale file as mentioned below -->
+    <script src="/static/bootstrap-fileinput/js/locales/zh.js"></script>
+                <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+                    <div class="row ">
+                        <div class="col-xs-12">
+                            <div class="dashboardItem">
+                            {% include 'view/systemconfig/message.html' %}
+                            <label class="col-md-12" style="color: #2ECC71">{{ delete|safe }}</label>
+                            {{ dstatus|safe }}
+
+                                <div class="dashboardItemTitle">
+                                    <span class="col-md-12">文件上传</span>
+                                </div>
+                                <div class="dashboardItemContent">
+                                <form class="form-horizontal" role="form" id="get_user" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="dashboardItemContent chosenSelect">
+                                    <div class="row">
+                                          <span class="col-md-12">上传最新文件&nbsp;&nbsp;&nbsp;
+                                              <a class="btn btn-primary" href="/monitor/MonitorManage/ConfigFileList/">配置列表</a>
+{#                                              <input  type="submit" class="btn btn-primary" name="loading" value="Clone操作"/>#}
+{#                                              <input  type="submit" class="btn btn-primary" name="pulling" value="Pull操作"/>#}
+{#                                              <button  type="submit" class="btn btn-danger" name="pushing_all" value="check">Push完整(修/增)</button>#}
+                                          </span>
+                                    </div>
+                                </div>
+                                     <div style="width: auto;height:auto;padding-left:10px;">
+                                         <hr width=100% size=3 color=#00ffff style="FILTER: alpha(opacity=100,finishopacity=0,style=3)">
+                                         <div style="padding: 10px">
+                                             <label class="form-group"><span style="color: #E74C3C">当前目录位置：</span>{{ args }}</label>
+                                         </div>
+                                         <div style="padding: 10px">
+                                             <label>提示：<span style="color: #E74C3C;">支持单个或者多个文件同时上传</span></label>
+                                             <input  type="file" class="file" name="file_name" id="input-2" multiple data-show-upload="false" data-show-caption="true" required="required"/>
+                                         </div>
+                                         <div style="padding: 20px;">
+                                             <input class="btn btn-primary"  type="submit" value="上传"/>
+                                         </div>
+                                     </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<script>
+    $(document).ready(function() {
+            $('#datatable').dataTable({
+                 "pagingType":   "full_numbers",
+                 "autoFill": true,
+		         "iDisplayLength": 15,
+		         "aLengthMenu": [[15,25, 50, 100, -1], [15,25, 50, 100, "All"]]
+		       });
+            });
+
+/* 全选/反选
+   formName所在form的name值
+   checkboxName checkbox的name值
+   注意：所有checkbox的name值必须一样
+*/
+var checkedAll = false;
+function selectAll(formName,checkboxName){
+    var form = document.all.item(formName);
+    var elements = form.elements[checkboxName];
+    for(var i=0;i<elements.length;i++){
+        var e = elements[i];
+        if(checkedAll){
+            e.checked = false;
+            form.alls.checked = false;
+        }else{
+            e.checked = true;
+            form.alls.checked = true;
+        }
+    }
+    if(checkedAll){
+        checkedAll = false;
+    }else{
+        checkedAll = true;
+    }
+}
+/* 检查是否有checkbox被选中
+   checkbox的name值必须一样，这样才能达到全选效果
+*/
+function checkAll(formName,checkboxName){
+    var hasCheck = false;
+    var form = document.all.item(formName);
+    var elements = form.elements[checkboxName];
+    for(var i=0;i<elements.length;i++){
+        var e = elements[i];
+        if(e.checked){
+            hasCheck = true;
+        }
+    }
+    return hasCheck;
+}
+/* 执行操作 */
+function do_action(){
+    if(!checkAll("formName","id")){
+        alert("请至少选择一项！");
+    }
+}
+    $("#input-id").fileinput();
+
+    $("#input-id").fileinput({'showUpload':false, 'previewFileType':'any'});
+</script>
+{% endblock %}

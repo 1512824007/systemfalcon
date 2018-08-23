@@ -1,0 +1,75 @@
+.transfer{
+    min-height:300px;
+    width:100%;
+    margin:0 auto;
+    padding:0 30px;
+}
+.transfer ul{
+    padding:0 15px;
+    height:200px;
+    overflow-y: auto;
+}
+.transfer ul li{
+    list-style-type: none;
+    border-bottom: 1px solid #f0f0f0;
+    padding:10px 0;
+    cursor: pointer;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+.transfer input[type='checkbox']{
+    margin-right:10px;
+}
+.transfer input[type='text']{
+    height:30px;
+    line-height: 30px;
+    width:90%;
+    display: block;
+    margin:10px  auto;
+    border:1px solid #ebe7e7;
+    font-size:12px;
+    text-indent: 10px;
+    border-radius:0;
+}
+.transfer h4{
+    margin:0;
+    height:40px;
+    line-height: 40px;
+    font-size:16px;
+    background: #ebe7e7;
+    text-align: center;
+}
+.transBtnBox{
+    float: left;
+    width:20%;
+    margin-top:10%;
+}
+.transferLeft,.transferRight{
+    min-height:240px;
+    width:40%;
+    float: left;
+    border:1px solid #ebe7e7;
+}
+.transferBtn{
+    display: block;
+    height: 30px;
+    line-height:30px;
+    text-decoration: none;
+    width:80px;
+    color: #aaaaaa;
+    text-align: center;
+    margin:20px auto;
+    border:#f0f0f0 solid 1px;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    border-radius:2px;
+}
+.transferBtn:hover{
+    text-decoration: none;
+    color: #aaaaaa;
+}
+.transfer .noResult{
+    text-align: center;
+}

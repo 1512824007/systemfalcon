@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+
+    <title>监控系统</title>
+</head>
+<body onload="IFrameResize()">
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="dashboardItemTitle">
+                            <span style="float:left;margin-top: -10px">操作日志列表</span>
+                            <p style="float:left;margin-left: 60px;margin-top: 10px">共 {{ log|length }} 个记录</p>
+                            <p style="float:left;margin-left: 60px;margin-top: 10px">
+                                每页显示
+                                    <select id = "select1" >
+                                        <option value={{ height }}>{{ height }}</option>
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                    </select>
+                                个
+                            </p>
+                            <a id="export" class="btn btn-primary active" style="float:right">导出记录</a>
+                        </div>
+                        <div class="dashboardItemContent" >
+                            <table id="log_obj" class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th nowrap width="160px">用户账号</th>
+                                    <th nowrap width="160px">操作时间</th>
+                                    <th nowrap width="160px">操作对象</th>
+                                    <th nowrap width="160px">操作行为</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in contacts %}
+                                    <tr>
+                                        <td>{{ i.0.7 }}</td>
+                                        <td>{{ i.0.0 }} {{ i.0.1 }}</td>
+                                        <td>{{ i.0.9 }}</td>
+                                        <td>{{ i.1.0 }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        <ul class="pagination">
+                            <li>
+                                {% if contacts.has_previous %}
+                                    <a href="?page={{ contacts.previous_page_number }}&height={{ height }}">&laquo;</a>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <span class="current">
+                                    Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+                                </span>
+                            </li>
+                            <li>
+                                {% if contacts.has_next %}
+                                    <a href="?page={{ contacts.next_page_number }}&height={{ height }}">&raquo;</a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+</body>
+
+    <script src="/static/public/plugin/jquery-1.12.4/jquery.min.js"></script>
+    <script src="/static/js/jquery.table2excel.js"></script>
+<script>
+    function IFrameResize(){
+        var obj = parent.document.getElementById("if0"); //取得父页面IFrame对象
+        obj.height = this.document.body.scrollHeight; //调整父页面中IFrame的高度为此页面的高度
+        var obj2 = parent.parent.document.getElementById("ll"); //取得父页面IFrame对象
+        obj2.height = this.document.body.scrollHeight+200; //调整父页面中IFrame的高度为此页面的高度
+    }
+    $(document).ready(function() {
+        $("#select1").change(function () {
+            var height = $(this).val();
+            var obj_li = $("li a");
+            var page = {{ contacts.number }};
+            for(var i = 0;i<obj_li.length;i++){
+                obj_li[i].href = obj_li[i].href+"&height="+height;
+            }
+
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/log_list/",
+                data:{
+                    "height":height,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    window.location = '/monitor/sysconf/log_list/?page='+page+'&height='+height;
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯异常...");
+                }
+            });
+        });
+        $("#export").click(function () {
+            $("#log_obj").table2excel({
+                filename: "Log_Table"
+            })
+        })
+
+    });
+</script>
+</html>

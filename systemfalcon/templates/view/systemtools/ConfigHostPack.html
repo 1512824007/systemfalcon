@@ -1,0 +1,68 @@
+{% extends "view/Base4.html" %}
+{% block content %}
+<div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+    {% include 'view/systemconfig/message.html' %}
+       <label class="col-md-12" style="color: #61ff55">{{ add_mod|safe }}</label>
+       <label class="col-md-12" style="color: #FF5733">{{ add_mod_error|safe }}</label>
+       <label class="col-md-12" style="color: #FF5733">{{ info|safe }}</label>
+       <label class="col-md-12" style="color: #FF5733">{{ add_mod_other_error|safe }}</label>
+    <div class="row ">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>添加参数包</span>
+                </div>
+                <div class="dashboardItemContent">
+                <form method="post">
+                {% csrf_token %}
+                <div class="dashboardItemContent chosenSelect">
+                    <div class="row">
+                          <span class="col-md-12" style="color: #6e6fff">参数包名称是配置文件名称：如 cfg.json&nbsp;&nbsp;&nbsp;
+                          <input  type="submit" class="btn btn-primary" name="adding" value="添加"/>
+                            <a href="/monitor/MonitorManage/ConfigHost/detail/{{ host_id }}/" class="btn btn-primary">返回</a>
+                          </span>
+                    </div>
+                </div>
+                     <div style="width: auto;height:auto;padding-left:10px;">
+                         <hr width=100% size=3 color=#00ffff style="FILTER: alpha(opacity=100,finishopacity=0,style=3)">
+                         <div class="form-group">
+                            <label class="control-label">主机名称</label>
+                             <label class="text-info">{% for i in host_list %}{{ i.hostname }}{% endfor %}</label>
+                         </div>
+                         <div class="form-group">
+                            <label class="control-label">参数包名称</label>
+                                <input class="form-control" name="para_name" type="text" required>
+                         </div>
+                         <div class="form-group">
+                            <a href="/monitor/MonitorManage/ConfigHostPackParameter/" target="_blank" class="btn btn-primary">参数管理</a>
+                         </div>
+                        <div class="form-group">
+                            <label class="control-label">参数选择</label>
+                         <div class="checkbox">
+                             {% for para in parameter %}
+                             <label><input  name="para" value="{{ para.id }}" type="checkbox" multiple/>{{ para.parameter_name }}</label>
+                             {% endfor %}
+                         </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">缺省参数选择</label>
+                         <div class="checkbox">
+                             {% for para_default in parameter_default %}
+                             <label><input  name="para_default" value="{{ para_default.id }}" type="checkbox" checked multiple/>{{ para_default.parameter_name }}</label>
+                             {% endfor %}
+                         </div>
+                        </div>
+                          <div class="form-group">
+                            <input type="hidden" name="host_id"  class="form-control" value="{{ host_id }}"/>
+                         </div>
+                     </div>
+                    <div>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

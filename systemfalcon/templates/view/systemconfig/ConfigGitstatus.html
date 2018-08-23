@@ -1,0 +1,42 @@
+{% extends "view/Base2.html" %}
+{% block content %}
+
+    <div class="row ">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+                <div class="col-md-12" style="padding-top: 20px;">
+                    <form method="post" action="/monitor/MonitorManage/ConfigGitstatus/">{% csrf_token %}
+                        <span style="display: block">已记录提交:</span>
+                            {% for i in c_c_list %}
+                                <span style="display: block">{{ i }}</span>
+                            {% endfor %}
+                        <div style="padding-top: 20px;">
+                            <input type="hidden" name="commit" value="{{ c_c_list }}" />
+                            <input class="btn btn-primary"  type="submit" name="git_push" value="commit提交(同时push)"/>
+                        </div>
+                    </form>
+                    <form method="post" action="/monitor/MonitorManage/ConfigGitstatus/">{% csrf_token %}
+                        <span style="display: block">未提交记录:</span>
+                            {% for i in c_n_list %}
+                                <span style="display: block">{{ i }}</span>
+                            {% endfor %}
+                        <div style="padding-top: 20px;">
+                            <input type="hidden" name="add2" value="{{ c_n_list }}" />
+                            <input class="btn btn-primary"  type="submit" name="git_add2" value="add提交"/>
+                        </div>
+                    </form>
+                    <form method="post" action="/monitor/MonitorManage/ConfigGitstatus/">{% csrf_token %}
+                        <span style="display: block">未跟踪文件:</span>
+                            {% for i in u_list %}
+                                <span style="display: block">{{ i }}</span>
+                            {% endfor %}
+                        <div style="padding-top: 20px;">
+                            <input type="hidden" name="add1" value="{{ u_list }}" />
+                            <input class="btn btn-primary"  type="submit" name="git_add" value="add到本地仓库"/>
+                        </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

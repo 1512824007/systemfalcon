@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block content %}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+
+          <!-- Device Info -->
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="box">
+                <div class="box-header">
+                    <h4 class="box-title" style="color: darkgreen"><i class="fa fa-pie-chart"></i>&nbsp;告警内容</h4>
+                </div>
+                <div class="box-body box-padding" style="color: #0b0b0b">
+
+
+
+
+
+        <!-- Main content -->
+        <section class="content">
+
+
+          <div class="row">
+            <!-- Basic info -->
+            <div class="col-xs-12">
+              <div class="box">
+                {% csrf_token %}
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                       {% for rs in alarm_info %}
+                     <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>机房名称:</td>
+                      <td>{{ rs.room }}</td>
+                    </tr>
+                      <tr>
+                          <td>主机名称:</td>
+                          <td>{{ rs.hostname }}</td>
+                      </tr>
+                    <tr>
+                      <td>IP&nbsp;&nbsp;&nbsp;地址:</td>
+                      <td>{{ rs.ip }}</td>
+                    </tr>
+                    <tr>
+                      <td>业务集群:</td>
+                      <td>{{ rs.cluster }}</td>
+                    </tr>
+                       {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Device Info -->
+          <div class="row">
+            <div class="col-xs-12 col-lg-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title" style="color: #14a6ef;">详情</h4>
+                </div>
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                      {% for ar in alarm_info %}
+
+                    <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>事件内容:</td>
+                      <td>{{ ar.aralm }}</td>
+                    </tr>
+                        {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-lg-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title" style="color: #14a6ef;">告警</h4>
+                </div>
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                       {% for ar in alarm_info %}
+                    <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>时间:</td>
+                      <td>{{ ar.start_date }}</td>
+                    </tr>
+                    <tr>
+                      <td>状态:</td>
+                      <td>{{ ar.alarm_status }}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-lg-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title" style="color: #14a6ef;">发生时长</h4>
+                </div>
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                  {% for ar in alarm_info %}
+                    <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>时长:</td>
+                      <td>
+                          {% if ar.end_date%}
+                              {{  ar.start_date|timesince:ar.end_date }}
+                          {% else %}
+                              {{ '' }}
+                          {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-lg-6">
+              <div class="box">
+                <div class="box-header">
+                  <h4 class="box-title" style="color: #14a6ef;">恢复</h4>
+                </div>
+                <div class="box-body box-padding">
+                  <table class="table table-striped">
+                    {% for ar in alarm_info %}
+                    <tr class="hide">
+                      <th>key</th>
+                      <th>value</th>
+                    </tr>
+                    <tr>
+                      <td>时间:</td>
+                      <td>
+                          {% if ar.end_date%}
+                              {{  ar.end_date }}
+                          {% else %}
+                              {{ '' }}
+                          {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>状态:</td>
+                      <td>{{ ar.alarm_status_ok }}</td>
+                    </tr>
+                    {% endfor %}
+
+                  </table>
+                </div>
+              </div>
+            </div>
+              <div class="col-xs-12">
+         </div>
+          </div>
+        </section>
+              </div>
+               </div>
+            </div>
+            </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+

@@ -1,0 +1,57 @@
+{% extends 'view/Base2.html' %}
+{% block content %}
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+
+            <div class="row" >
+                <div class="col-xs-12" >
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>{{ pro }}</span>
+                        </div>
+                        <div class="dashboardItemContent">
+
+                            <h4 style="color: #1a78b5;padding: 20px 3%;margin: 0;font-size:16px;font-weight: 600;">设备列表</h4>
+                            <table class="table table-hover text-center" style="width:94%;margin:0 3%;">
+                                <thead >
+                                    <th class="text-center">主机名</th>
+                                    <th class="text-center">产品、服务角色</th>
+                                    <th class="text-center">机房</th>
+                                </thead>
+                                <tbody>
+                                {% for each in contacts %}
+                                    <tr>
+                                        <td><a href="/monitor/MonitorInfo/Device/{{ each.0}}" target="_blank">{{ each.0 }}</td>
+                                        <td>{{ each.1 }}</td>
+                                        <td><a href="/monitor/MonitorInfo/ServerRoom/Detail/{{ each.2}}" target="_blank">{{ each.2 }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <div class="pagination">
+                                <span class="step-links">
+                                    {% if contacts.has_previous %}
+                                        <a href="?page={{ contacts.previous_page_number }}">previous</a>
+                                    {% endif %}
+
+                                    <span class="current">
+                                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                                    </span>
+
+                                    {% if contacts.has_next %}
+                                        <a href="?page={{ contacts.next_page_number }}">next</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</div>
+
+{% endblock %}

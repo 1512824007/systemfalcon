@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/forms.css">
+    <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+    <title>监控系统</title>
+</head>
+<body>
+    <div  class="monitorContainer" style="margin-top:0px">
+        <div class="Content" >
+            <div class="row">
+
+                <div >
+                    <div class="panel-body">
+                        <div class="widget_type__admintextinputwidget">
+
+                            <table class="table table-striped">
+                                <tr>
+                                    <th><label class="required" for="id_name">用户组名：</label></th>
+                                    <th>
+                                        <input name="name" id="id_name" >
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><label class="required" for="description">描述：</label></th>
+                                    <th>
+                                        <input  name ="description" id="description" style="width: 200px; height: 40px">
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="widget_type__filteredselectmultiple">
+                            <label for="id_permissions">模块:</label>
+                            <div class="related-widget-wrapper">
+                                <div class="selector">
+                                    <div class="selector-available">
+                                        <h2>可用 模块</h2>
+                                        <!--<p id="id_permissions_filter" class="selector-filter">
+                                            <label for="id_permissions_input">
+                                                <span class="help-tooltip search-label-icon" title="在此框中键入以过滤可用的权限列表"></span>
+                                            </label>
+                                            <input type="text" placeholder="过滤" id="id_permissions_input">
+                                        </p>-->
+                                        <select name="permissions_old" data-field-name="权限" multiple="multiple" class="filtered"  id="id_permissions_from">
+                                            {% for i in per %}
+                                            <option value="{{ i.id }}" title="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                    <ul class="selector-chooser">
+                                        <li>
+                                            <a title="选择" onclick="move('id_permissions_from','id_permissions_to')" class="selector-add">选择</a>
+                                        </li>
+                                        <li>
+                                            <a title="删除" onclick="move('id_permissions_to','id_permissions_from')" id="id_permissions_remove_link" class="selector-remove">删除</a>
+                                        </li>
+                                    </ul>
+                                    <div class="selector-chosen">
+                                        <h2>选中的 模块</h2>
+                                        <select id="id_permissions_to" multiple="multiple" name="permissions" class="filtered"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="widget_type__filteredselectmultiple">
+                            <label for="id_permissions">设备组:</label>
+                            <div class="related-widget-wrapper">
+                                <div class="selector">
+                                    <div class="selector-available">
+                                        <h2>可用 设备组</h2>
+                                        <!--<p id="id_permissions_filter" class="selector-filter">
+                                            <label for="id_permissions_input">
+                                                <span class="help-tooltip search-label-icon" title="在此框中键入以过滤可用的权限列表"></span>
+                                            </label>
+                                            <input type="text" placeholder="过滤" id="id_permissions_input">
+                                        </p>-->
+                                        <select name="grp_old" data-field-name="设备组" multiple="multiple" class="filtered"  id="id_grp_from">
+                                            {% for i in grp_name %}
+                                            <option value="{{ i.0 }}" title="{{ i.1 }}">{{ i.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                    <ul class="selector-chooser">
+                                        <li>
+                                            <a title="选择" onclick="move('id_grp_from','id_grp_to')" >选择</a>
+                                        </li>
+                                        <li>
+                                            <a title="删除" onclick="move('id_grp_to','id_grp_from')" >删除</a>
+                                        </li>
+                                    </ul>
+                                    <div class="selector-chosen">
+                                        <h2>选中的 设备组</h2>
+                                        <select id="id_grp_to" multiple="multiple" name="grp" class="filtered"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div >
+                    <button id="change-per" onclick="save_g()"   style="display: none" name="_save">
+                        <span class="text">保存</span>
+                    </button>
+                    <button>
+                        <span class="text">取消</span>
+                    </button>
+                </div>
+                <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+            </div>
+        </div>
+    </div>
+<script>
+    $(document).ready(function() {
+        if ({{ is_show|safe }}) {
+            $("#change-per").show();
+        }
+    });
+    function move(fr,to) {
+            var fromBox = document.getElementById(fr);
+            var toBox = document.getElementById(to);
+            while(fromBox.selectedIndex != -1){
+                toBox.appendChild(fromBox.options[fromBox.selectedIndex]);
+            }
+        }
+
+    function save_g() {
+        var id_name = document.getElementById("id_name").value;
+        var des = document.getElementById("description").value;
+        var role = document.getElementById("id_permissions_to");
+        var options = role.options;
+        var b = new Array();
+        for(var i=0,len=options.length;i<len;i++){
+            var opt = options[i];
+            b[i]=opt.value;
+        }
+        var obj = document.getElementById("id_grp_to");
+        var grpoptions = obj.options;
+        var grpid = new Array();
+        for(var i=0,len=grpoptions.length;i<len;i++){
+            var opt = grpoptions[i];
+            grpid[i]=opt.value;
+        }
+
+        $.ajax({
+            type:"post",
+            url:"/monitor/sysconf/group_add/",
+            data:{
+                "id_name":id_name,
+                "mod_id":JSON.stringify(b),
+                "des":JSON.stringify(des),
+                "grp":JSON.stringify(grpid),
+                'csrfmiddlewaretoken': $('#csrf_token').val()
+            },
+
+            success:function(data) {
+                alert(data);
+            },
+            error:function(data) {
+                alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+            }
+        });
+    }
+
+</script>
+</body>

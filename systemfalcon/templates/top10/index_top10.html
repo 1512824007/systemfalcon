@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+
+    <title>监控系统</title>
+</head>
+<body>
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+
+
+                            <div class="dashboardItemContent">
+                                <div class="row dashboardSpecialContent">
+                                    <div class="col-xs-2" style="width: 20%!important;">
+                                        <h4 class="text-center">CPU</h4>
+
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <th>主机名</th>
+                                            <th>使用率</th>
+                                            </thead>
+                                            <tbody>
+                                     	    {% for en_co in cpu %}
+		                            <tr>
+                		                <td>
+                                            <a href="/monitor/MonitorInfo/Device/{{ en_co.endpoint }}" target="_blank">{{ en_co.endpoint }}</td>
+                              	 		<td>{{ en_co.value }}</td>
+                         		    </tr>
+                      			    {% endfor %}
+	
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-xs-2" style="width: 20%!important;">
+                                        <h4 class="text-center">内存</h4>
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <th>主机名</th>
+                                            <th>使用率</th>
+                                            </thead>
+                                            <tbody>
+                                     	    {% for en_co in mem %}
+		                            <tr>
+                		                <td>
+                                            <a href="/monitor/MonitorInfo/Device/{{ en_co.endpoint }}" target="_blank">{{ en_co.endpoint }}</td>
+                              	 		<td>{{ en_co.value }}</td>
+                         		    </tr>
+                      			    {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-xs-2" style="width: 20%!important;">
+                                        <h4 class="text-center">网卡</h4>
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <th>主机名</th>
+                                            <th>使用率</th>
+                                            </thead>
+                                            <tbody>
+                                     	    {% for en_co in net %}
+		                            <tr>
+                		                <td>
+                                            <a href="/monitor/MonitorInfo/Device/{{ en_co.0 }}" target="_blank">{{ en_co.0 }}</td>
+                              	 		<td>{{ en_co.3 }}</td>
+                         		    </tr>
+                      			    {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-xs-2" style="width: 20%!important;">
+                                        <h4 class="text-center">硬盘</h4>
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <th>主机名</th>
+                                            <th>使用率</th>
+                                            </thead>
+                                            <tbody>
+                                     	    {% for en_co in disk %}
+		                            <tr>
+                		                <td>
+                                            <a href="/monitor/MonitorInfo/Device/{{ en_co.endpoint }}" target="_blank">{{ en_co.endpoint }}</td>
+                              	 		<td>{{ en_co.value }}</td>
+                         		    </tr>
+                      			    {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-xs-2" style="width: 20%!important;">
+                                        <h4 class="text-center">负载</h4>
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <th>主机名</th>
+                                            <th>使用率</th>
+                                            </thead>
+                                            <tbody>
+                                     	    {% for en_co in load %}
+		                            <tr>
+                		                <td>
+                                            <a href="/monitor/MonitorInfo/Device/{{ en_co.endpoint }}" target="_blank">{{ en_co.endpoint }}</td>
+                              	 		<td>{{ en_co.value }}</td>
+                         		    </tr>
+                      			    {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+    </div>
+</div>
+
+</body>

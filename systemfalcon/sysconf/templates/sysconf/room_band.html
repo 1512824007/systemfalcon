@@ -1,0 +1,156 @@
+{% extends "view/Base.html" %}
+{% block content %}
+<ul  class="nav nav-tabs">
+                <li role="presentation"><a href="/monitor/Dashboard/">dashboard</a></li>
+                <li role="presentation"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+                <li role="presentation"  class="active"><a href="/monitor/MonitorManage/">系统配置</a></li>
+                <li role="presentation"><a href="#">资源管理</a></li>
+                <li role="presentation"><a href="#">变更管理</a></li>
+                <li role="presentation"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+                <li role="presentation"><a href="#">安全检测</a></li>
+                <li role="presentation"><a href="#">FAQ</a></li>
+
+</ul>
+<div class="Content">
+    <h4 style="color: #1a78b5;padding: 0 30px;margin: 0;font-size:16px;">系统配置</h4>
+    <div class="row monitorInfoBox" style="position: relative;padding: 15px;">
+        <ul class="list-group pull-right" style="width: 60%;max-width:180px;text-align: center;position: absolute;top:15px;left: 40px;">
+            <li class="list-group-item"><a data-url="/monitor/MonitorManage/falcon/" class="UrlStorageClick" >告警组关系列表</a></li>
+            <li class="list-group-item tabActive"><a href="/monitor/sysconf/room_band/">各机房带宽情况</a></li>
+            <!--<li class="list-group-item"><a href="/monitor/MonitorInfo/UserRequest/">产品并发用户数</a></li>-->
+        </ul>
+        <div  style="margin-left: 205px;background: #fff;border:1px solid #f1f1f1;padding:0 10px 30px 10px;">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboardItem" style="min-height: 100px!important;">
+                        <div class="dashboardItemTitle">
+                            <span>上传带宽详情xlsx格式文件（要求无合并单元格）</span>
+                        </div>
+                        <div class="dashboardItemContent" >
+                            <div class="col-xs-6 rmt60 text-center" style="margin-top: 6px!important;">
+                                <form enctype="multipart/form-data" action="uploadFile/" method="post">{% csrf_token %}
+                                   <input type="file" name="myfile" style="float:left"/>
+                                   <input type="submit" value="同步带宽最新信息"/>
+                                </form>
+                                {% if ok %}
+                                <div>{{ ok }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboardItem">
+                        <div class="dashboardItemTitle">
+                            <span>带宽情况</span>
+                        </div>
+                        <div class="dashboardItemContent">
+                            <div class="col-xs-6 rmt60 text-center" style="margin-top: 6px!important;">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <th nowrap>ID</th>
+                                    <th nowrap>省份</th>
+                                    <th nowrap>运营商</th>
+                                    <th nowrap>CDN节点名称（机房)</th>
+                                    <th nowrap>带宽（M）</th>
+                                    <th nowrap>可用带宽（M）</th>
+                                    <th nowrap>保底（M）</th>
+                                    <!--<th nowrap>备注</th>-->
+                                    </thead>
+                                    <tbody class="tbody">
+                                    {% for i in contacts %}
+                                        <tr>
+                                        <td nowrap id="id">{{i.id}}</td>
+                                        <td nowrap id="province">{{i.province}}</td>
+                                        <td nowrap id="operator">{{i.operator}}</td>
+                                        <td nowrap id="idc_name">{{i.idc_name}}</td>
+                                        <td nowrap id="speed">{{i.speed}}</td>
+                                        <td nowrap id="available_speed">{{i.available_speed}}</td>
+                                        <td nowrap id="bottom_speed">{{i.bottom_speed}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <script>
+                                    $(document).ready(function() {
+                                        var numID = $(".tbody tr td:nth-of-type(n+2)").each(function () {});
+                                        numID.dblclick(function () {
+                                            var tdIns = $(this);
+                                            var tdpar = $(this).parents("tr");
+
+                                            var tdCol = $(this).attr("id");
+
+                                            tdpar.css("backgroundColor","yellow");
+
+                                            if(tdIns.children("input").length>0){
+                                                return false;
+                                            }
+
+                                            var text = tdIns.html();
+                                            var inputIns = $("<input type= 'text '/>");
+                                            inputIns.width(tdIns.width);
+                                            inputIns.height("36px");
+                                            inputIns.val(tdIns.html());
+
+                                            tdIns.html("");//删除原来单元格td内容
+
+                                            inputIns.appendTo(tdIns).focus().select();//将需要插入的输入框代码插入dom节点中
+
+                                            inputIns.click(function() {
+                                                return false;
+                                            });
+
+                                            //处理Enter和Esc事件
+                                            inputIns.blur(function() {
+                                                var inputText = $(this).val();
+                                                tdIns.html(inputText);
+                                                tdpar.css("background-color","white");
+                                                //alert(tdCol);
+                                                var tdId = tdpar.children("td:eq(0)").text();
+                                                $.ajax({
+                                                    type:"post",
+                                                    url:"updateband",
+                                                    data:{
+                                                        "old_content":JSON.stringify(text),
+                                                        "input_content":tdIns.html(),
+                                                        "Col":tdCol,
+                                                        "tdId":tdId,
+                                                    },
+                                                    success:function(data) {
+                                                        alert(data);
+                                                    },
+                                                    error:function() {
+                                                        alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                                                        
+                                                    }
+                                                });
+                                            });
+
+
+                                        });
+                                    });
+                                </script>
+                                <ul class="pagination">
+                                    <li>
+                                        {% if contacts.has_previous %}
+                                            <a href="?page={{ contacts.previous_page_number }}">&laquo;</a>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        <span class="current">
+                                            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+                                        </span>
+                                    </li>
+                                    <li>
+                                        {% if contacts.has_next %}
+                                            <a href="?page={{ contacts.next_page_number }}">&raquo;</a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

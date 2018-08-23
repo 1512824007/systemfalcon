@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <title>监控系统</title>
+
+</head>
+<body onload="IFrameResize()">
+<div  class="monitorContainer" style="margin-top:0px">
+    <div class="Content" >
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="dashboardItem" style="min-height: 100px!important;">
+                    <div class="dashboardItemTitle">
+                        <span style="float:left;margin-top: -10px">用户列表</span>
+                        <p style="float:left;margin-left: 60px;margin-top: 10px">共{{ u.count }}个记录</p>
+                        <p style="float:left;margin-left: 60px;margin-top: 10px">
+                            每页显示
+                                <select id = "select1" >
+                                    <option value={{ height }}>{{ height }}</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                </select>
+                            个
+                        </p>
+                        <a id="batch_add_user" class="btn btn-primary active" style="float:right">批量导入用户</a>
+                    </div>
+                    <div class="dashboardItemContent " >
+                        <table class="table table-hover">
+                            <thead>
+                            <th nowrap>用户ID</th>
+                            <th nowrap><a href="/monitor/sysconf/group_manage/" target="_blank">用户账号</a></th>
+                            <th nowrap>邮箱</th>
+                            <th nowrap><a href="/monitor/sysconf/groupManage/" target="_blank">用户组</a></th>
+
+                            <th nowrap>账户状态（是否已激活）</th>
+                            <th nowrap>操作</th>
+                            </thead>
+                            <tbody>
+                                {% for i in contacts %}
+                                <tr>
+                                    <td nowrap>{{ i.id }}</td>
+                                    <td nowrap>{{ i.username }}</td>
+                                    <td nowrap>{{ i.email }}</td>
+                                    <td nowrap>
+                                        {% for j in ug %}
+                                            {% if j.0 == i.username %}
+                                                <li>{{ j.1 }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td nowrap>
+                                        <div class="dropdown">
+                                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                {% if i.is_active  %}
+                                                正常使用
+                                                {% else %}
+                                                禁用
+                                                {% endif %}
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                <li><a onclick="active({{ i.id }})">正常使用</a></li>
+                                                <li><a onclick="forbidden({{ i.id }})">禁用</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td nowrap><a id="u1">管理  </a><a id="u2">  详情</a><a id="u3">  删除</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <ul class="pagination">
+                            <li>
+                                {% if contacts.has_previous %}
+                                    <a href="?page={{ contacts.previous_page_number }}">&laquo;</a>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <span class="current">
+                                    Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
+                                </span>
+                            </li>
+                            <li>
+                                {% if contacts.has_next %}
+                                    <a href="?page={{ contacts.next_page_number }}">&raquo;</a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                        <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade manageModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">管理用户</h4>
+                    </div>
+                    <iframe id="if0" frameborder="0" height="500" scrolling="auto" width="100%"></iframe>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade deleteModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h3 style="margin:50px;text-align: center;font-size:18px;font-weight:500">是否确认删除用户以及相应配置？</h3>
+                    </div>
+                    <div class="text-center dashboardItem" style="padding-bottom: 30px;">
+                        <button id="confirm" type="button" class="btn  btn-primary " >确定</button>
+                        <button type="button" style="margin-left: 15px;" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade importUserModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">导入用户</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="file" id="file" name="myfile" />
+                        </div>
+
+                    </div>
+                    <div class="text-center dashboardItem" style="padding-bottom: 30px;">
+                        <button id="importFile" type="button" class="btn  btn-primary " >确定</button>
+                        <button type="button" style="margin-left: 15px;" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/public/plugin/jquery-1.12.4/jquery.js"></script>
+<script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+<script src="/static/public/plugin/Transfer/transfer.js"></script>
+<script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/public/js/R.js"></script>
+<script>
+    function IFrameResize(){
+        var obj = parent.document.getElementById("if0"); //取得父页面IFrame对象
+        obj.height = this.document.body.scrollHeight; //调整父页面中IFrame的高度为此页面的高度
+        //var obj2 = parent.parent.document.getElementById("us"); //取得父页面IFrame对象
+        //obj2.height = this.document.body.scrollHeight+200; //调整父页面中IFrame的高度为此页面的高度
+    }
+    function active(arg_id) {
+        var id = arg_id;
+        $.ajax({
+            type: "post",
+            url: "/monitor/sysconf/user_active/",
+            data: {
+                "id": id,
+                "active":"true",
+                'csrfmiddlewaretoken': $('#csrf_token').val()
+            },
+            success: function (data) {
+                alert(data);
+                location.reload();
+            },
+            error: function (data) {
+                alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+            }
+        });
+    }
+    function forbidden(arg_id) {
+        var id = arg_id;
+        $.ajax({
+            type: "post",
+            url: "/monitor/sysconf/user_active/",
+            data: {
+                "id": id,
+                "active":"false",
+                'csrfmiddlewaretoken': $('#csrf_token').val()
+            },
+            success: function (data) {
+                alert(data);
+                location.reload();
+            },
+            error: function (data) {
+                alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+            }
+        });
+    }
+    $(document).ready(function() {
+        $("td #u1").click(function() {
+            var id = $(this).parent().parent().children()[0].innerHTML;
+            var name = $(this).parent().parent().children()[1].innerHTML;
+            $('.manageModal').modal('show');
+            $("#if0").attr("src","/monitor/sysconf/user_manage_op/?name="+name+"&id="+id);
+        });
+        $("td #u2").click(function() {
+            var id = $(this).parent().parent().children()[0].innerHTML;
+            var name = $(this).parent().parent().children()[1].innerHTML;
+            window.open("/monitor/sysconf/user_detail_op/?username="+name+"&id="+id);
+        });
+        $("td #u3").click(function() {
+            var obj = $(this).parent().parent();
+            var id = obj.children()[0].innerHTML;
+            var name = obj.children()[1].innerHTML;
+            $('.deleteModal').modal('show');
+            $("#confirm").click(function () {
+                $.ajax({
+                    type:"post",
+                    url:"/monitor/sysconf/user_del/",
+                    data:{
+                        "Id":id,
+                        "user_name":name,
+                        'csrfmiddlewaretoken': $('#csrf_token').val()
+                    },
+                    success:function(data) {
+                        alert(data);
+                        location.reload();
+                    },
+                    error:function(data) {
+                        alert("删除组,无法提交数据变更,通讯异常...");
+                    }
+                });
+            })
+
+        });
+        $("#select1").change(function () {
+            var height = $(this).val();
+            $.ajax({
+                type:"post",
+                url:"/monitor/sysconf/user_show/",
+                data:{
+                    "height":height,
+                    'csrfmiddlewaretoken': $('#csrf_token').val()
+                },
+                success:function(data) {
+                    window.location = '/monitor/sysconf/user_show/?height='+height;
+                },
+                error:function(data) {
+                    alert("无法提交数据变更,通讯异常...");
+                }
+            });
+        });
+        $('#batch_add_user').click(function(){
+            $('.importUserModal').modal('show');
+            $("#importFile").click(function () {
+                var user_list = document.getElementById("file").files[0];
+                var reader = new FileReader();
+                reader.readAsText(user_list);// 读取文件
+                reader.onload = function () { // 读取完文件之后会回来这里（注意：这是异步操作）
+                    var user_List = this.result;
+                    $.ajax({
+                        type: "post",
+                        url: "/monitor/sysconf/user_import/",
+                        data: {
+                            'myfile':user_List,
+                            'csrfmiddlewaretoken': $('#csrf_token').val()
+                        },
+                        success: function (data) {
+                            alert(data);
+                            location.reload();
+                        },
+                        error: function (data) {
+                            alert("无法提交数据变更,通讯有问题，请稍后刷新...");
+                        }
+                    });
+                };
+            })
+        });
+    });
+
+</script>
+</html>

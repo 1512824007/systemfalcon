@@ -1,0 +1,45 @@
+{% extends "view/Base2.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="dashboardItemContent" style="position: relative;">
+            <div class="row" style="padding:20px">
+                <div class="col-xs-6">
+                    <a  class="btn btn-success" onclick=show('live')>直播</a>
+                    <a  class="btn btn-success" onclick=show('media')>LDC</a>
+                    <a  class="btn btn-success" onclick=show('web')>页面</a>
+                </div>
+                <div class="col-xs-6">
+                    <a href="/monitor/MonitorInfo/UserRequest/" target="_blank" class="pull-right rmr15 UrlStorageClick">显示详情</a>
+                </div>
+                <div class="row" style="padding:10px"></div>
+                <div  style="width: auto;height: auto;">
+                    <iframe id="live" src="/monitor/hcgraph/index/chart/room/live_ss/{{ roomname }}" width="100%" height="430px" scrolling="no" frameborder="0" > </iframe>
+                </div>
+                <div  style="width: auto;height: auto;">
+                    <iframe id="media" src="/monitor/hcgraph/index/chart/room/media_ss/{{ roomname }} "  width="100%" height="430px" scrolling="no" frameborder="0" style="display: none" > </iframe>
+                </div>
+                <div style="width: auto;height: auto; ">
+                    <iframe id="web" src="/monitor/hcgraph/index/chart/room/web_ss/{{ roomname }}" width="100%" height="430px" scrolling="no" frameborder="0" style="display: none" > </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" >
+    function show(id){
+        var showDiv=document.getElementById(id);
+        var divList=document.getElementsByTagName('iframe');
+        for(i=0;i<divList.length;i++){
+            if(divList[i].id==id){
+                divList[i].style.display='block';
+            }
+            else{
+                divList[i].style.display='none';
+            }
+        }
+    }
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,265 @@
+{% extends "view/Base3.html" %}
+{% block content %}
+<ul  class="nav nav-tabs">
+    <li role="presentation"><a href="/monitor/Dashboard/">dashboard</a></li>
+    <li role="presentation" class="active"><a href="/monitor/MonitorInfo/">监控信息</a></li>
+    <li role="presentation"><a href="/monitor/MonitorManage/">系统配置</a></li>
+    <li role="presentation"><a href="#">资源管理</a></li>
+    <li role="presentation"><a href="#">变更管理</a></li>
+    <li role="presentation"><a href="/monitor/sysconf/user_manage/">用户管理</a></li>
+    <li role="presentation"><a href="#">安全检测</a></li>
+    <li role="presentation"><a href="#">FAQ</a></li>
+</ul>
+<div class="Content">
+    <h4 style="color: #1a78b5;padding: 0 5px;margin: 0;font-size:16px;">机房运行状态详情<a class="backMonitor">返回</a></h4>
+    <div class="row" style="padding: 15px 0;">
+        <div class="col-xs-6">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>基本信息</span>
+                </div>
+                <div class="dashboardItemContent">
+                    <table class="table troubleTable">
+                        {% for name in room_name %}
+                        <tbody>
+                        <tr>
+                            <td>机房名</td>
+                            <td>{{ name.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>别名</td>
+                            <td>{{ name.abbr_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>地址</td>
+                            <td>{{ name.address }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>运营商</td>
+                            <td>{{ change }}</td>
+                        </tr>
+                        <tr>
+                            <td>网络服务商</td>
+                            <td>{{ change }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>总出口带宽</td>
+                            <td>{{ speed }}Mbps</td>
+                        </tr>
+                        <tr>
+                            <td>网关</td>
+                            <td>{{ gateway }}</td>
+                        </tr>
+                        <tr>
+                            <td>IP段</td>
+                            <td>{{ network }}</td>
+                        </tr>
+                        <tr>
+                        {% for event in  room_event %}
+                            <td>机房服务业务</td>
+                            <td>{{ event.cluster }}</td>
+                        </tr>
+                    {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>网络状况-带宽</span>
+                </div>
+                <div style="height:100%;" >
+                    <div>
+                        <div class="panel-heading">
+                            <h3 style="text-align: center" class="panel-title"><i class="fa fa-circle">max:{{ max_data|filesizeformat }}&nbsp;&nbsp;&nbsp;&nbsp;</i><i class="fa fa-circle-o">min:{{ min_data|filesizeformat }}</i></h3>
+                        </div>
+                        <div style="height: auto;width: auto;">
+                            <iframe src="/monitor/top10/idc_network_graph/{{ roomname }}"  width="100%" height="500px"
+                                    scrolling="no" frameborder="0" ></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row rmt20">
+        <div class="col-xs-6">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>网络状况-节点质量</span>
+                </div>
+                <div class="dashboardItemContent" style="position: relative;">
+                    <div style="height: auto;width: auto;">
+                    <iframe src="/monitor/hcgraph/index/chart/room_networks/{{ roomname }}"  width="100%" height="500px" scrolling="no" frameborder="0" > </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>网络状况-并发请求</span>
+                </div>
+                <div class="dashboardItemContent">
+                    <div style="height: auto;width: auto;">
+                    <iframe src="/monitor/hcgraph/index/chart/room_services/{{ roomname }}"  width="100%" height="500px" scrolling="no" frameborder="0" > </iframe>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row rmt20">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>设备故障列表</span>
+                </div>
+                <div class="dashboardItemContent">
+                    <table class="table table-hover deviceList">
+                        <thead>
+                            <th>ID</th>
+                            <th>主机名</th>
+                            <th>所属产品</th>
+                            <th>故障时间</th>
+                            <th>故障简述</th>
+                            <th>当前状态</th>
+                            <th>操作</th>
+                        </thead>
+                        <tbody>
+
+                        {% for event in device_event %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ event.hostname }}</td>
+                                <td>{{ event.cluster }}</td>
+                                <td>{{ event.date }}</td>
+                                <td><a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ event.hostname }}&aralm={{ event.aralm|urlencode }}" target='_blank'>{{ event.aralm }}</a></td>
+                                <td>未处理</td>
+                                <td><a class="btn btn-default" href="javascript:solve('{{ event.event_id }}');">已知</a></td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row rmt20">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>网络故障列表</span>
+                </div>
+                <div class="dashboardItemContent">
+                    <table class="table table-hover deviceList">
+                        <thead>
+                            <th>ID</th>
+                            <th>主机名</th>
+                            <th>所属产品</th>
+                            <th>故障时间</th>
+                            <th>故障简述</th>
+                            <th>当前状态</th>
+                            <th>操作</th>
+                        </thead>
+                        <tbody>
+                        {% for event in network_event %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ event.hostname }}</td>
+                                <td>{{ event.cluster }}</td>
+                                <td>{{ event.date }}</td>
+                                <td><a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ event.hostname }}&aralm={{ event.aralm|urlencode }}" target='_blank'>{{ event.aralm }}</a></td>
+                                <td>未处理</td>
+                                <td><a class="btn btn-default" href="javascript:solve('{{ event.event_id }}');">已知</a></td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row rmt20">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>应用服务故障列表</span>
+                </div>
+                <div class="dashboardItemContent">
+                    <table class="table table-hover deviceList">
+                        <thead>
+                            <th>ID</th>
+                            <th>主机名</th>
+                            <th>所属产品</th>
+                            <th>故障时间</th>
+                            <th>故障简述</th>
+                            <th>当前状态</th>
+                            <th>操作</th>
+                        </thead>
+                        <tbody>
+                        {% for event in app_event %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ event.hostname }}</td>
+                                <td>{{ event.cluster }}</td>
+                                <td>{{ event.date }}</td>
+                                <td><a href="/monitor/MonitorInfo/TroubleInfo/?hostname={{ event.hostname }}&aralm={{ event.aralm|urlencode }}" target='_blank'>{{ event.aralm }}</a></td>
+                                <td>未处理</td>
+                                <td><a class="btn btn-default" href="javascript:solve('{{ event.event_id }}');">已知</a></td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row rmt20">
+        <div class="col-xs-12">
+            <div class="dashboardItem">
+                <div class="dashboardItemTitle">
+                    <span>各产品设备列表</span>
+                </div>
+               <div class="dashboardItemContent">
+                    <table class="table table-hover deviceList">
+                        <thead>
+                        <th>主机名</th>
+                        <th>IP</th>
+                        <th>所属产品</th>
+                        <th>服务角色</th>
+                        <th>机架位</th>
+                        <th>当前状态</th>
+                        </thead>
+                        <tbody>
+                        {% for info in data %}
+                            <tr>
+                                <td><a href="/monitor/MonitorInfo/Device/{{ info.0 }}/">{{ info.0 }}</a></td>
+                                <td>{{ info.1 }}</td>
+                                <td>{{ info.2 }}</td>
+                                <td>{{ info.3 }}</td>
+                                <td>{{ info.4 }}</td>
+                                <td>服务</td>
+                            </tr>
+                        {% endfor %}
+                        {% for info in data1 %}
+                            <tr>
+                                <td><a href="/monitor/MonitorInfo/Device/{{ info.0 }}/">{{ info.0 }}</a></td>
+                                <td>{{ info.1 }}</td>
+                                <td>{{ info.2 }}</td>
+                                <td>{{ info.3 }}</td>
+                                <td>{{ info.4 }}</td>
+                                <td style="color: red">待用</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<body>
+
+<table class="table table-bordered" id="cluster_servers_table">
+                    <tr>
+                      <th>ID</th>
+                        <th>idc英文名称</th>
+                      <th>所属IDC</th>
+                      <th>并发数</th>
+                    </tr>
+                {% for each in ss %}
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                        <td>{{ each.idc }}</td>
+                      <td>
+                        {% for each_1 in room_all %}
+                            {% if each.idc == each_1.abbr_name %}
+                              {{ each_1.name }}
+                            {% endif %}
+                          {% endfor %}
+                      </td>
+                      <td>{{ each.total_ssvalue }}</td>
+                      <td>
+                    </tr>
+                {% endfor %}
+
+</body>
+{% endblock %}
+

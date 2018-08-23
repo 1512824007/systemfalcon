@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/public/plugin/Chosen/chosen.min.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/public/plugin/bootstrap-3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/public/css/R.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <link href="/static/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+
+    <script src="/static/public/plugin/jquery-1.12.4/jquery.min.js"></script>
+    <script src="/static/public/plugin/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="/static/js/gridData.js"></script>
+    <script src="/static/js/echarts-all-3.js"></script>
+    <script src="/static/js/china.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+    <script src="/static/js/underscore.js"></script>
+    <script src="/static/Hchartscode/highcharts.js"></script>
+    <script src="/static/Hchartscode/modules/data.js"></script>
+    <script src="/static/js/g.js"></script>
+    <script src="/static/public/plugin/Chosen/chosen.jquery.min.js"></script>
+    <script src="/static/public/plugin/Pagination/pagination.js"></script>
+    <script src="/static/public/js/common.js"></script>
+    <script src="/static/public/js/R.js"></script>
+    <title>监控系统</title>
+</head>
+<body>
+    <div  class="monitorBox">
+        <nav class="topbar navbar navbar-inverse navbar-fixed-top">
+            <div class="containerBox">
+                <div class="navbar-header">
+                    <a class="navbar-brand logoBox" href="#">监控系统</a>
+                    <a class="navbar-brand" href="{% url 'logout' %}" style="font-size:14px;float:right">
+                        <i class="glyphicon glyphicon-off"></i>
+                        退出
+                    </a>
+                    <a class="navbar-brand" href="" style="font-size:14px;float:right">
+                        <i class="glyphicon glyphicon-user"></i>
+                        {{ request.user }}
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div  class="monitorContainer">
+
+			{% block content %}
+            {% endblock %}
+
+        </div>
+    </div>
+    <!--<a class="backTop"><i class="glyphicon glyphicon-menu-up"></i></a>-->
+</body>
+<!--<script>
+    monitor.DashBoard();
+</script>
+<script>
+    monitor.TroubleList();
+</script>
+<script>
+    monitor.Device();
+</script>
+<script>
+    monitor.MonitorInfo();
+</script>
+<script>
+    monitor.ServerRoom();
+</script>
+<script>
+    monitor.TroubleBI();
+</script>
+<script>
+    monitor.TroubleInfo();
+</script>
+<script>
+    monitor.UserRequest();
+</script>-->
+</html>
